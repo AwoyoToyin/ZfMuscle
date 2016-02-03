@@ -1,0 +1,156 @@
+<?php
+
+// For PHP <= 5.4, you should replace any ::class references with strings
+// remove the first \ and the ::class part and encase in single quotes
+
+return [
+    'bjyauthorize' => [
+        // set the 'guest' role as default (must be defined in a role provider)
+        'default_role' => 'guest',
+        /* If you only have a default role and an authenticated role, you can
+         * use the 'AuthenticationIdentityProvider' to allow/restrict access
+         * with the guards based on the state 'logged in' and 'not logged in'.
+         *
+         * 'default_role'       => 'guest',         // not authenticated
+         * 'authenticated_role' => 'user',          // authenticated
+         * 'identity_provider'  => 'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider',
+         */
+        'identity_provider' => 'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider',
+
+        /* role providers simply provide a list of roles that should be inserted
+         * into the Zend\Acl instance. the module comes with two providers, one
+         * to specify roles in a config file and one to load roles using a
+         * Zend\Db adapter.
+         */
+        'role_providers' => [
+
+            /* here, 'guest' and 'user are defined as top-level roles, with
+             * 'admin' inheriting from user
+             */
+            'BjyAuthorize\Provider\Role\Config' => [
+//                'guest' => array(
+//                    'children' => array(
+//                        'administrator' => array()
+//                    )
+//                )
+            ],
+
+            // this will load roles from
+            // the 'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' service
+            \BjyAuthorize\Provider\Role\ObjectRepositoryProvider::class => [
+                // class name of the entity representing the role
+                'role_entity_class' => 'ZfMuscle\Entity\Role',
+                // service name of the object manager
+                'object_manager'    => 'doctrine.entitymanager.orm_default',
+            ],
+        ],
+
+        // resource providers provide a list of resources that will be tracked
+        // in the ACL. like roles, they can be hierarchical
+        'resource_providers' => [
+//            'zfmuscle_resource_provider_adapter' => [
+//                'object_manager' => 'doctrine.entitymanager.orm_default'
+//            ],
+            \BjyAuthorize\Provider\Resource\Config::class => [
+                'zfmuscle' => [],
+                'zfmuscle-user' => [],
+                'zfmuscle-dashboard' => [],
+                'zfmuscle-system' => [],
+            ],
+        ],
+
+        /* rules can be specified here with the format:
+         * [roles (array], resource, [privilege (array|string], assertion])
+         * assertions will be loaded using the service manager and must implement
+         * Zend\Acl\Assertion\AssertionInterface.
+         * *if you use assertions, define them using the service manager!*
+         */
+        'rule_providers' => [
+            'zfmuscle_rule_provider_adapter' => [
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'rule_entity_class' => 'ZfMuscle\Entity\Role'
+            ],
+            \BjyAuthorize\Provider\Rule\Config::class => [
+                'allow' => [
+                    // allow guests and users (and admins, through inheritance)
+                    // the "wear" privilege on the resource "pants"
+                    [['guest'], 'zfmuscle', []],
+                    [['guest'], 'zfmuscle-user', []],
+                    [['guest'], 'zfmuscle-dashboard', []],
+                ],
+
+                // Don't mix allow/deny rules if you are using role inheritance.
+                // There are some weird bugs.
+                'deny' => [
+                    // ...
+                ],
+            ],
+        ],
+
+        /* Currently, only controller and route guards exist
+         *
+         * Consider enabling either the controller or the route guard depending on your needs.
+         */
+        'guards' => [
+            'zfmuscle_route_guard_adapter' => [
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'rule_entity_class' => 'ZfMuscle\Entity\Role'
+            ],
+            /* If this guard is specified here (i.e. it is enabled], it will block
+             * access to all controllers and actions unless they are specified here.
+             * You may omit the 'action' index to allow access to the entire controller
+             */
+//            \BjyAuthorize\Guard\Controller::class => [
+//                ['controller' => 'index', 'action' => 'index', 'roles' => ['guest','user']],
+//                ['controller' => 'index', 'action' => 'stuff', 'roles' => ['user']],
+//                // You can also specify an array of actions or an array of controllers (or both)
+//                // allow "guest" and "admin" to access actions "list" and "manage" on these "index",
+//                // "static" and "console" controllers
+//                [
+//                    'controller' => ['index', 'static', 'console'],
+//                    'action' => ['list', 'manage'],
+//                    'roles' => ['guest', 'admin'],
+//                ],
+//                [
+//                    'controller' => ['search', 'administration'],
+//                    'roles' => ['staffer', 'admin'],
+//                ],
+//                ['controller' => 'zfcuser', 'roles' => []],
+//                // Below is the default index action used by the ZendSkeletonApplication
+//                // ['controller' => 'Application\Controller\Index', 'roles' => ['guest', 'user']],
+//            ],
+
+            /* If this guard is specified here (i.e. it is enabled], it will block
+             * access to all routes unless they are specified here.
+             */
+            \BjyAuthorize\Guard\Route::class => [
+                ['route' => 'zfcuser', 'roles' => ['guest']],
+                ['route' => 'zfcuser/logout', 'roles' => ['guest']],
+                ['route' => 'zfcuser/login', 'roles' => ['guest']],
+                ['route' => 'zfcuser/register', 'roles' => ['guest']],
+                // Below is the default index action used by the ZendSkeletonApplication
+                ['route' => 'home', 'roles' => ['guest']],
+
+
+                // zfmuscle guest routes
+                ['route' => 'zfmuscle', 'roles' => ['guest']],
+                ['route' => 'zfmuscle/install', 'roles' => ['guest']],
+                ['route' => 'zfmuscle/dashboard', 'roles' => ['guest']],
+                ['route' => 'zfmuscle/users/login', 'roles' => ['guest']],
+                ['route' => 'zfmuscle/users/logout', 'roles' => ['guest']],
+            ],
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            'zfmuscle_route_guard_adapter'          => 'ZfMuscle\Factory\DoctrineRouteGuardAdapterFactory',
+//            'zfmuscle_resource_provider_adapter'    => 'ZfMuscle\Factory\DoctrineResourceProviderAdapterFactory',
+            'zfmuscle_rule_provider_adapter'        => 'ZfMuscle\Factory\DoctrineRuleProviderAdapterFactory',
+        ]
+    ],
+    'view_manager' => [
+        'template_map' => [
+            'error/403' => __DIR__ . '/../../vendor/ZfMuscle/view/error/403.phtml'
+        ]
+    ]
+];

@@ -1,0 +1,66 @@
+
+<?php
+$form = $this->loginForm;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfmuscle/users/login'));
+$form->setAttribute('method', 'post');
+$form->setAttribute('id', 'form-login');
+$form->setAttribute('role', 'form');
+$form->setAttribute('autocomplete', 'off');
+?>
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <?php echo $this->form()->openTag($form) ?>
+
+        <h2 class="text-center">ZfMuscle | SignIn</h2>
+
+        <div class="col-sm-12">
+            <!-- START Form Control-->
+            <div class="form-group form-group-default">
+                <label><?php echo $form->get('identity')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('identity')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+        <div class="col-sm-12">
+            <!-- START Form Control-->
+            <div class="form-group form-group-default">
+                <label><?php echo $form->get('credential')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('credential')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+        <div class="col-sm-12">
+            <div class="checkbox">
+                <?php echo $this->formInput($form->get('remember_me')); ?>
+                <?php $name = $form->get('remember_me')->getName(); ?>
+                <label for="<?= $name ?>"><?php echo $form->get('remember_me')->getLabel(); ?></label>
+            </div>
+        </div>
+
+        <input type="hidden" id="redirect_on_success_url" name="redirect_on_success_url" value="<?php echo $this->url('zfmuscle/dashboard'); ?>" />
+
+        <div class="col-sm-12">
+            <!-- ajax-loading state -->
+            <div id="loading" style="display: none;"></div>
+
+            <!-- END Form Control-->
+            <?php echo $this->formButton($form->get('submit')) ?>
+        </div>
+
+        <?php echo $this->form()->closeTag() ?>
+
+    </div>
+</div>
+
+<!-- Display form info -->
+<?php // $errors = $this->formElementErrors($form->get('identity')); ?>
+<?php // if ($errors): ?>
+<!--<div class="alert alert-danger text-center" id="result"><?php // echo $errors; ?></div>-->
+<?php // endif; ?>

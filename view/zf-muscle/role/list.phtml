@@ -1,0 +1,63 @@
+
+<div class="row">
+    <div class="pull-left">Total of <?php echo $this->paginator->getTotalItemCount(); ?> record(s) found.</div>
+    <div class="pull-right">
+        <?php echo $this->paginationControl($this->paginator, 'Sliding', // All, Elastic, Jumping, Sliding
+                    'search_pagination.phtml', array('route' => 'zfmuscle/permission/roles/index'));
+            ?>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover table-condensed userList" id="condensedTable">
+        <thead>
+            <tr>
+                <!-- NOTE * : Inline Style Width For Table Cell is Required as it may differ from user to user 
+                            Comman Practice Followed
+                -->
+                <th style="width:3%">
+                    <button class="btn"><i class="pg-trash"></i>
+                    </button>
+                </th>
+                <th style="width:43%">Name</th>
+                <th style="width:43%">Parent</th>
+                <th style="width:10%">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($this->paginator->count()): ?>
+                <?php foreach ($this->paginator as $key => $role): ?>
+                    <tr>
+                        <td class="v-align-middle">
+                            <div class="checkbox ">
+                                <input type="checkbox" value="<?php echo $role->getId(); ?>" id="checkbox<?php echo $role->getId(); ?>">
+                                <label for="checkbox<?php echo $role->getId(); ?>"></label>
+                            </div>
+                        </td>
+                        <td class="v-align-middle semi-bold"><?php echo $role->getRoleId(); ?></td>
+                        <td class="v-align-middle"><?php echo $role->getParent() ? $role->getParent()->getRoleId() : ''; ?></td>
+
+                        <td class="v-align-middle semi-bold" nowrap="nowrap">
+                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-role'), 'entry'); ?>
+                            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/edit', array('id' => $role->getId())) ?>" title="Edit Role">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-role'), 'delete'); ?>
+                            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/delete', array('id' => $role->getId())) ?>" title="Delete Role">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td align="center" colspan="10000">No data available.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>

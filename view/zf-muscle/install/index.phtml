@@ -1,0 +1,100 @@
+
+<?php
+if (!$this->enableRegistration) {
+    print "Registration is disabled";
+    return;
+}
+$form = $this->registerForm;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfmuscle/install'));
+$form->setAttribute('method', 'post');
+$form->setAttribute('id', 'form-install');
+$form->setAttribute('role', 'form');
+$form->setAttribute('autocomplete', 'off');
+?>
+
+<?php // elseif ($element instanceof Zend\Form\Element\Captcha): ?>
+    <!--<dd><?php // echo $this->formCaptcha($element) . $this->formElementErrors($element) ?></dd>-->
+<?php // else: ?>
+    <!--<dd><?php // echo $this->formInput($element) . $this->formElementErrors($element) ?></dd>-->
+<?php // endif ?>
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <?php echo $this->form()->openTag($form) ?>
+
+        <h2 class="text-center">ZfMuscle | Install</h2>
+
+        <div class="col-sm-6">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('firstname')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('firstname')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+        <div class="col-sm-6">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('lastname')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('lastname')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+
+        <div class="col-sm-12">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('username')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('username')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+        <div class="col-sm-12">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('email')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('email')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+
+        <div class="col-sm-6">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('password')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('password')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+        <div class="col-sm-6">
+            <!-- START Form Control-->
+            <div class="form-group">
+                <label><?php echo $form->get('passwordVerify')->getLabel(); ?></label>
+                <div class="controls">
+                    <?php echo $this->formInput($form->get('passwordVerify')); ?>
+                </div>
+            </div>
+            <!-- END Form Control-->
+        </div>
+
+        <div class="col-sm-12">
+            <!-- ajax-loading state -->
+            <div id="loading" style="display: none;"></div>
+            <?php echo $this->formButton($form->get('submit')) ?>
+            <?php echo $this->form()->closeTag() ?>
+        </div>
+
+    </div>
+</div>

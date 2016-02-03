@@ -1,0 +1,70 @@
+
+
+<?php
+
+$rActions = array();
+$rControllers = array();
+$rModules = array();
+if (!empty($this->roleResources))
+{
+    foreach ($this->roleResources as $entity)
+    {
+        $rActions[] = $entity->getId();
+        $rControllers[] = $entity->getController()->getId();
+        $rModules[] = $entity->getController()->getModule()->getId();
+    }
+}
+?>
+
+<!-- START Form Control-->
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group form-group-default form-group-default-select2 required">
+            <label>Permission Scope</label>
+            <select class="full-width" data-placeholder="Select Role Permission" data-init-plugin="select2" name="role_scope">
+                <option value="all">All</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- END Form Control-->
+
+<ul id="role-resource">
+<?php foreach ($this->resources as $module): ?>
+    <?php $mTitle = $module->getTitle(); $mTitleLower = strtolower($mTitle); ?>
+    <li>
+        <div class="checkbox check-primary">
+            <input type="checkbox" <?php echo (in_array($module->getId(), $rModules)) ? 'checked = "checked"' : '' ?> name="modules[]" id="<?php echo $mTitleLower; ?>" />
+            <label for="<?php echo $mTitleLower; ?>"><?php echo $mTitle; ?></label>
+        </div>
+        <?php if ($module->getControllers()): ?>
+            <ul>
+                <?php foreach ($module->getControllers() as $controller): ?>
+                    <?php if ($controller->getAlias() === 'zfmuscle') { continue; } ?>
+                    <?php $cAlias = $controller->getAlias(); $cAliasUpper = $cAlias.$controller->getId(); ?>
+                    <li>
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" <?php echo (in_array($controller->getId(), $rControllers)) ? 'checked = "checked"' : '' ?> name="controllers[]" id="<?php echo $cAlias; ?>" />
+                            <label for="<?php echo $cAlias; ?>"><?php echo $cAlias; ?></label>
+                        </div>
+                        <?php if ($controller->getActions()): ?>
+                            <ul>
+                                <?php foreach ($controller->getActions() as $action): ?>
+                                    <?php $aTitle = $action->getTitle(); $aTitleId = strtolower($aTitle.$action->getId()); ?>
+                                    <li>
+                                        <div class="checkbox check-primary">
+                                            <input type="checkbox" <?php echo (in_array($action->getId(), $rActions)) ? 'checked = "checked"' : '' ?> name="actions[]" value="<?php echo $action->getId(); ?>" id="<?php echo $aTitleId; ?>" />
+                                            <label for="<?php echo $aTitleId; ?>"><?php echo $aTitle; ?></label>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </li>
+<?php endforeach ?>
+</ul>

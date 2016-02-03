@@ -1,0 +1,70 @@
+
+<div class="row">
+    <div class="pull-left">Total of <?php echo $this->paginator->getTotalItemCount(); ?> record(s) found.</div>
+    <div class="pull-right">
+        <?php echo $this->paginationControl($this->paginator, 'Sliding', // All, Elastic, Jumping, Sliding
+                    'search_pagination.phtml', array('route' => 'zfmuscle/permission/users/index'));
+            ?>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover table-condensed userList" id="condensedTable">
+        <thead>
+            <tr>
+                <!-- NOTE * : Inline Style Width For Table Cell is Required as it may differ from user to user 
+                            Comman Practice Followed
+                -->
+                <th style="width:4%">
+                    <button class="btn btn-sm"><i class="pg-trash" style="text-align: center;"></i>
+                    </button>
+                </th>
+                <th style="width:22%">Firstname</th>
+                <th style="width:22%">Lastname</th>
+                <th style="width:16%">Username</th>
+                <th style="width:12%">Role</th>
+                <th style="width:10%">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($this->paginator->count()): ?>
+                <?php foreach ($this->paginator as $key => $user): ?>
+                    <tr>
+                        <td class="v-align-middle">
+                            <div class="checkbox ">
+                                <input type="checkbox" value="<?php echo $user->getId(); ?>" id="checkbox<?php echo $user->getId(); ?>">
+                                <label for="checkbox<?php echo $user->getId(); ?>"></label>
+                            </div>
+                        </td>
+                        <td class="v-align-middle semi-bold"><?php echo $user->getFirstname(); ?></td>
+                        <td class="v-align-middle"><?php echo $user->getLastname(); ?></td>
+                        <td class="v-align-middle semi-bold"><?php echo $user->getUsername(); ?></td>
+                        <td class="v-align-middle"><?php echo $user->getRole() ? $user->getRole()->getName() : 'NILL'; ?></td>
+
+                        <td class="v-align-middle semi-bold" nowrap="nowrap">
+                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-user'), 'register'); ?>
+                            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/view', array('id' => $user->getId())) ?>" title="View User">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </a>
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/edit', array('id' => $user->getId())) ?>" title="Edit User">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-user'), 'delete'); ?>
+                            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/delete', array('id' => $user->getId())) ?>" title="Delete User">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td align="center" colspan="10000">No data available.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>

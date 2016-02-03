@@ -1,0 +1,93 @@
+
+<?php
+
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfmuscle/permission/roles/add'));
+$form->setAttribute('method', 'post');
+$form->setAttribute('id', 'form-role-add');
+$form->setAttribute('class', 'p-t-15');
+$form->setAttribute('role', 'form');
+$form->setAttribute('autocomplete', 'off');
+?>
+
+<div class="col-sm-12">
+    <!-- START add Form -->
+    <?php echo $this->form()->openTag($form) ?>
+    <div class="panel panel-transparent ">
+
+        <div class="panel-heading">
+            <div class="panel-title pull-left">Add New Role</div>
+            
+            <p class="pull-right">
+<!--                <button class="btn btn-default btn-cons" type="button">White</button>
+                <button class="btn btn-success btn-cons" type="button">Success</button>-->
+                <?php echo $this->formButton($form->get('submit')) ?>
+            </p>
+        </div>
+        <!-- Tab panes -->
+        <div class="panel-body no-padding">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-transparent">
+                        <ul class="nav nav-tabs nav-tabs-simple nav-tabs-left bg-white" id="tab-3">
+                            <li class="active">
+                                <a data-toggle="tab" href="#tabInformation">Information</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tabResource">Resource</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content bg-white">
+                            <div class="tab-pane active p-l-20 p-r-20" id="tabInformation">
+                                <div class="row column-seperation">
+                                    <div class="col-md-6">
+                                        <h5 class="m-b-20">General Information</h5>
+                                        
+                                        <?php echo $this->formHidden($form->get('id')); ?>
+                                        
+                                        <!-- START Form Control-->
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group form-group-default required">
+                                                    <label><?php echo $form->get('name')->getLabel(); ?></label>
+                                                    <?php echo $this->formInput($form->get('name')); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END Form Control-->
+                                        
+                                        <!-- START Form Control-->
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group form-group-default form-group-default-select2 required">
+                                                    <label><?php echo $form->get('parent')->getLabel(); ?></label>
+                                                    <?php echo $this->formSelect($form->get('parent')); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END Form Control-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane p-l-20 p-r-20 p-t-20" id="tabResource">
+                                <div class="row column-seperation">
+                                    <div class="col-md-6">
+                                        <h5 class="m-b-20">Role Permissions</h5>
+                                        <?php echo $this->RoleResourceHelper($this->resources); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <input type="hidden" id="redirect_on_success_url" name="redirect_on_success_url" value="<?php echo $this->url('zfmuscle/permission/roles'); ?>" />
+    
+    <?php echo $this->form()->closeTag() ?>
+    <!--END add Form-->
+</div>

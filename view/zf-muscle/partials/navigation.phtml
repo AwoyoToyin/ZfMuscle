@@ -1,0 +1,38 @@
+
+<ul>
+    <li class="cd-label">Secondary</li>
+    <?php foreach ($this->container as $index => $page): $moduleId = rand().time(); ?>
+<!--        --><?php //$result = array(); $controllers = $page->get('controller'); if ($controllers) {
+//            if (strpos($controllers, ',') !== FALSE)
+//            {
+//                $controllers = explode(',', $controllers);
+//                $result = $this->RoleHelper()->isAllowed($controllers);
+//            }
+//            else
+//            {
+//                $result = $this->RoleHelper()->isAllowed(array($controllers));
+//            }
+//        } ?>
+        <?php $spanId = $moduleId."".$index; ?>
+        <li class="has-children bookmarks <?php if ($page->isActive()) { echo ' active'; } ?>" id="<?php echo $spanId; ?>">
+            <a href="<?php echo $page->getHref(); ?>"><?php echo $page->getLabel() ?></a>
+            <?php if ($page->hasPages()): ?>
+                <ul>
+                    <?php foreach ($page->getPages() as $child): ?>
+                        <?php $controller = $child->get('controller') ? $child->get('controller') : ''; ?>
+                        <?php //$result = $this->RoleHelper()->isAllowed(array($controller)); ?>
+                        <?php //if (isset($result['allow']) && $result['allow'] == true): ?>
+                            <?php if ($child->isActive()): ?>
+                                <script type="application/javascript">
+                                    var spanId = '<?php echo $spanId; ?>';
+                                    document.getElementById(spanId).className += ' active';
+                                </script>
+                            <?php endif; ?>
+                            <li><a href="<?php echo $child->getHref(); ?>"><?php echo $child->getLabel() ?></a></li>
+                        <?php //endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </li>
+    <?php endforeach; ?>
+</ul>

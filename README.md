@@ -65,11 +65,10 @@ Example:
 )
 //...
 ```
-Copy the files in config to your application autoload and remove the '.dist' extensions
+Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
 
 ### Note:
 The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
-Copy and remove the ```.dist``` extension of this file so your application does not get broken.
 
 
 Styling And Other Assets

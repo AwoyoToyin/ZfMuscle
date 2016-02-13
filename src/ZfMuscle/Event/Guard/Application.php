@@ -6,6 +6,7 @@ use ZfMuscle\Exception\NeedsInstallException;
 use BjyAuthorize\Guard\GuardInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\Http\Response;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -18,6 +19,26 @@ class Application implements GuardInterface
      * Marker for installation needed to be run
      */
     const ERROR = 'needs-install';
+
+    /**
+     * Installation route
+     */
+    const MODULE_MATCH = 'zfmuscle';
+
+    /**
+     * Installation route
+     */
+    const INSTALL_ROUTE = 'zfmuscle/install';
+
+    /**
+     * Login route
+     */
+    const LOGIN_ROUTE = 'zfmuscle/users/login';
+
+    /**
+     * Dashboard route
+     */
+    const DASHBOARD_ROUTE = 'zfmuscle/dashboard';
 
     /**
      * @var ServiceLocatorInterface
@@ -42,7 +63,7 @@ class Application implements GuardInterface
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'onRoute'), -1001);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'onRoute'), -900);
     }
 
     /**
@@ -68,18 +89,65 @@ class Application implements GuardInterface
     public function onRoute(MvcEvent $event)
     {
         $service    = $this->serviceLocator->get('zfmuscle_application_service');
+        $match      = $event->getRouteMatch();
+        $routeName  = $match->getMatchedRouteName();
 
-        if (!$service->isInstalled())
+        if (!$service->isInstalled() && $routeName === static::INSTALL_ROUTE)
         {
             $service->run();
+            return;
         }
+        elseif (!$service->isInstalled())
+        {
+            $url = $event->getRouter()->assemble(array(), array('name' => static::INSTALL_ROUTE));
+            $this->_redirectTo($event, $url);
+        }
+        else
+        {
+            $routeArray = explode('/', $routeName);
+            if (in_array(static::MODULE_MATCH, $routeArray))
+            {
+                $auth = $this->serviceLocator->get('zfcuser_auth_service');
+                if ($routeName === static::LOGIN_ROUTE && $auth->hasIdentity())
+                {
+                    $url = $event->getRouter()->assemble(array(), array('name' => static::DASHBOARD_ROUTE));
+                }
+                elseif ($routeName === static::LOGIN_ROUTE)
+                {
+                    return;
+                }
+                elseif (!$auth->hasIdentity())
+                {
+                    $url = $event->getRouter()->assemble(array(), array('name' => static::LOGIN_ROUTE));
+                }
+                $this->_redirectTo($event, $url);
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
 
-        $event->setError(static::ERROR);
-        $event->setParam('exception', new NeedsInstallException('You need install the application'));
+    protected function _redirectTo(MvcEvent $event, $url)
+    {
+        $response = $event->getResponse();
 
-        /* @var $app \Zend\Mvc\Application */
-        $app = $event->getTarget();
+        $response = $response ?: new Response();
+        $response->getHeaders()->addHeaderLine('Location', $url);
+        $response->setStatusCode(302);
+        $response->sendHeaders();
+        $event->setResponse($response);
 
-        $app->getEventManager()->trigger(MvcEvent::EVENT_DISPATCH_ERROR, $event);
+        // To avoid additional processing
+        // we can attach a listener for Event Route with a high priority
+        $stopCallBack = function($event) use ($response)
+        {
+            $event->stopPropagation();
+            return $response;
+        };
+
+        //Attach the "break" as a listener with a high priority
+        $event->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, $stopCallBack);
     }
 }

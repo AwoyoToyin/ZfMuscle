@@ -18,7 +18,7 @@ class SystemController extends AbstractSecuredActionController
     {
         return new ViewModel(array());
     }
-    
+
     public function updateResourceAction()
     {
         $output = array();
@@ -100,7 +100,7 @@ class SystemController extends AbstractSecuredActionController
                                                 {
                                                     $data['title'] = strtolower($action);
                                                 }
-                                                
+
                                                 $data['controller_id'] = $controllerEntity->getId();
                                                 $this->service_definition = 'zfmuscle_resource_service';
                                                 $service = $this->getService();
@@ -128,7 +128,7 @@ class SystemController extends AbstractSecuredActionController
         {
             var_dump($exc->getMessages()); die;
         }
-        
+
         if (isset($output['error']) && !empty($output['error']) && $output['error'] === true)
         {
             $this->namespace = 'danger';
@@ -139,7 +139,7 @@ class SystemController extends AbstractSecuredActionController
             $this->namespace = 'success';
             $this->setFlashmessage('Object role resources updated successfully.');
         }
-        
+
         return $this->redirect()->toRoute(static::ROUTE_INDEX);
     }
 }

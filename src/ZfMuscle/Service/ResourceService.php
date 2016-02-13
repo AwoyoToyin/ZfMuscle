@@ -11,31 +11,44 @@ use ZfMuscle\Service\AbstractCrudService;
  */
 class ResourceService extends AbstractCrudService
 {
+    public function index($page=1, array $filters=[])
+    {
+        return parent::index($page, $filters);
+    }
+
+    public function fetchAllResources(array $filters=[], $orderBy=[], $groupBy=[])
+    {
+        return parent::fetchByGroup($filters, $orderBy, $groupBy);
+    }
+
     public function save(array $data)
     {
-        // check if controller action exists, do nothing if it exists
-        $filters['controller'] = array(
+        // check if resource already exist for the set role, do nothing if it does
+        $filters['role'] = [
+            'strategy'  => 'Equals',
+            'value'     => $data['role_id']
+        ];
+        $filters['resource_id'] = [
+            'strategy'  => 'Equals',
+            'value'     => $data['resource_id']
+        ];
+        $filters['controller_id'] = [
             'strategy'  => 'Equals',
             'value'     => $data['controller_id']
-        );
-        $filters['title'] = array(
-            'strategy'  => 'Equals',
-            'value'     => $data['title']
-        );
+        ];
         $selection = $this->provider->selectAll($filters);
-        $action = $this->provider->query($selection)->getOneOrNullResult();
-//        var_dump($action); die;
-        if ($action)
+        $result = $this->provider->query($selection)->getOneOrNullResult();
+        if ($result)
         {
-            return $action;
+            return $result;
         }
         
         $entity = $this->provider->createEntity();
         $entity->exchangeArray($data);
-        if (isset($data['controller_id']) && !empty($data['controller_id']))
+        if (isset($data['role_id']) && !empty($data['role_id']))
         {
-            $controller = $this->getServiceManager()->get('doctrine.entitymanager.orm_default')->getReference('ZfMuscle\Entity\ObjectRepositoryController', $data['controller_id']);
-            $entity->setController($controller);
+            $role = $this->getServiceManager()->get('doctrine.entitymanager.orm_default')->getReference('ZfMuscle\Entity\Role', $data['role_id']);
+            $entity->setRole($role);
         }
         $this->provider->save($entity);
         return $entity;

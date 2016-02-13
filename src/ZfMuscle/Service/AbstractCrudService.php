@@ -29,16 +29,23 @@ abstract class AbstractCrudService extends EventProvider implements ZfMuscleServ
      * @var Hydrator\ClassMethods
      */
     protected $formHydrator;
-    
-    public function index($page=1, array $filters=array())
+
+    public function index($page=1, array $filters=[], $orderBy=[], $groupBy=[])
     {
-        $selection = $this->provider->selectAll($filters);
+        $selection = $this->provider->selectAll($filters, $orderBy, $groupBy);
         $paginator = $this->provider->getPaginator($selection);
-        
+
         $paginator->setCurrentPageNumber($page)
-                ->setItemCountPerPage(20);
-        
+            ->setItemCountPerPage(20);
+
         return $paginator;
+    }
+
+    public function fetchByGroup(array $filters=[], $orderBy=[], $groupBy=[])
+    {
+        $selection = $this->provider->selectAll($filters, $orderBy, $groupBy);
+        $query = $this->provider->query($selection);
+        return $query->getResult();
     }
 
     public function read($id)

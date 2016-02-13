@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfMuscle\Service;
+namespace ZfMuscle\Service\Factory;
 
 use ZfMuscle\Event\Guard\Application;
 use Zend\ServiceManager\FactoryInterface;

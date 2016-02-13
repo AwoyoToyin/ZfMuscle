@@ -1,130 +1,74 @@
-jQuery(document).ready(function(){
-    //cache DOM elements
-    var mainContent = $('.cd-main-content'),
-        header = $('.cd-main-header'),
-        sidebar = $('.cd-side-nav'),
-        sidebarTrigger = $('.cd-nav-trigger'),
-        topNavigation = $('.cd-top-nav'),
-        searchForm = $('.cd-search'),
-        accountInfo = $('.account');
-
-    //on resize, move search and top nav position according to window width
-    var resizing = false;
-    moveNavigation();
-    $(window).on('resize', function(){
-        if( !resizing ) {
-            (!window.requestAnimationFrame) ? setTimeout(moveNavigation, 300) : window.requestAnimationFrame(moveNavigation);
-            resizing = true;
-        }
+jQuery(document).ready(function($)
+{
+    $(window).on('resize', function () {
+        if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+    });
+    $(window).on('resize', function () {
+        if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
     });
 
-    //on window scrolling - fix sidebar nav
-    var scrolling = false;
-    checkScrollbarPosition();
-    $(window).on('scroll', function(){
-        if( !scrolling ) {
-            (!window.requestAnimationFrame) ? setTimeout(checkScrollbarPosition, 300) : window.requestAnimationFrame(checkScrollbarPosition);
-            scrolling = true;
-        }
-    });
-
-    //mobile only - open sidebar when user clicks the hamburger menu
-    sidebarTrigger.on('click', function(event){
+    //open/close lateral filter
+    $('.navbar-header .navbar-brand').on('click', function(event){
         event.preventDefault();
-        $([sidebar, sidebarTrigger]).toggleClass('nav-is-visible');
+        triggerFilter(true);
+    });
+    $('.cd-filter .cd-close').on('click', function(event){
+        event.preventDefault();
+        triggerFilter(false);
     });
 
-    //click on item and show submenu
-    $('.has-children > a').on('click', function(event){
-        var mq = checkMQ(),
-            selectedItem = $(this);
-        if( mq == 'mobile' || mq == 'tablet' ) {
-            event.preventDefault();
-            if( selectedItem.parent('li').hasClass('selected')) {
-                selectedItem.parent('li').removeClass('selected');
-            } else {
-                sidebar.find('.has-children.selected').removeClass('selected');
-                accountInfo.removeClass('selected');
-                selectedItem.parent('li').addClass('selected');
-            }
+    //mobile version - detect click event on filters tab
+    var filter_tab_placeholder = $('.cd-tab-filter .placeholder a'),
+        filter_tab_placeholder_default_value = 'Select',
+        filter_tab_placeholder_text = filter_tab_placeholder.text();
+
+    $('.cd-tab-filter li').on('click', function(event){
+        //detect which tab filter item was selected
+        var selected_filter = $(event.target).data('type');
+
+        //check if user has clicked the placeholder item
+        if( $(event.target).is(filter_tab_placeholder) ) {
+            (filter_tab_placeholder_default_value == filter_tab_placeholder.text()) ? filter_tab_placeholder.text(filter_tab_placeholder_text) : filter_tab_placeholder.text(filter_tab_placeholder_default_value) ;
+            $('.cd-tab-filter').toggleClass('is-open');
+
+            //check if user has clicked a filter already selected
+        } else if( filter_tab_placeholder.data('type') == selected_filter ) {
+            filter_tab_placeholder.text($(event.target).text());
+            $('.cd-tab-filter').removeClass('is-open');
+
+        } else {
+            //close the dropdown and change placeholder text/data-type value
+            $('.cd-tab-filter').removeClass('is-open');
+            filter_tab_placeholder.text($(event.target).text()).data('type', selected_filter);
+            filter_tab_placeholder_text = $(event.target).text();
+
+            //add class selected to the selected filter item
+            $('.cd-tab-filter .selected').removeClass('selected');
+            $(event.target).addClass('selected');
         }
     });
 
-    //click on account and show submenu - desktop version only
-    accountInfo.children('a').on('click', function(event){
-        var mq = checkMQ(),
-            selectedItem = $(this);
-        if( mq == 'desktop') {
-            event.preventDefault();
-            accountInfo.toggleClass('selected');
-            sidebar.find('.has-children.selected').removeClass('selected');
-        }
-    });
-
-    $(document).on('click', function(event){
-        if( !$(event.target).is('.has-children a') ) {
-            sidebar.find('.has-children.selected').removeClass('selected');
-            accountInfo.removeClass('selected');
-        }
-    });
-
-    //on desktop - differentiate between a user trying to hover over a dropdown item vs trying to navigate into a submenu's contents
-    sidebar.children('ul').menuAim({
-        activate: function(row) {
-            $(row).addClass('hover');
-        },
-        deactivate: function(row) {
-            $(row).removeClass('hover');
-        },
-        exitMenu: function() {
-            sidebar.find('.hover').removeClass('hover');
-            return true;
-        },
-        submenuSelector: ".has-children",
-    });
-
-    function checkMQ() {
-        //check if mobile or desktop device
-        return window.getComputedStyle(document.querySelector('.cd-main-content'), '::before').getPropertyValue('content').replace(/'/g, "").replace(/"/g, "");
+    function triggerFilter($bool) {
+        var elementsToTrigger = $([$('.navbar-brand'), $('.cd-filter'), $('.cd-tab-filter'), $('.cd-gallery')]);
+        elementsToTrigger.each(function(){
+            $(this).toggleClass('filter-is-visible', $bool);
+        });
     }
 
-    function moveNavigation(){
-        var mq = checkMQ();
+    //close filter dropdown inside lateral .cd-filter
+    $('.cd-filter-block h4').on('click', function(){
+        // todo: close all opened menu before opening clicked
+        $(this).toggleClass('closed').siblings('.cd-filter-content').slideToggle(300);
+    });
 
-        if ( mq == 'mobile' && topNavigation.parents('.cd-side-nav').length == 0 ) {
-            detachElements();
-            topNavigation.appendTo(sidebar);
-            searchForm.removeClass('is-hidden').prependTo(sidebar);
-        } else if ( ( mq == 'tablet' || mq == 'desktop') &&  topNavigation.parents('.cd-side-nav').length > 0 ) {
-            detachElements();
-            searchForm.insertAfter(header.find('.cd-logo'));
-            topNavigation.appendTo(header.find('.cd-nav'));
-        }
-        checkSelected(mq);
-        resizing = false;
-    }
+    //fix lateral filter and gallery on scrolling
+    $(window).on('scroll', function(){
+        (!window.requestAnimationFrame) ? fixGallery() : window.requestAnimationFrame(fixGallery);
+    });
 
-    function detachElements() {
-        topNavigation.detach();
-        searchForm.detach();
-    }
-
-    function checkSelected(mq) {
-        //on desktop, remove selected class from items selected on mobile/tablet version
-        if( mq == 'desktop' ) $('.has-children.selected').removeClass('selected');
-    }
-
-    function checkScrollbarPosition() {
-        var mq = checkMQ();
-
-        if( mq != 'mobile' ) {
-            var sidebarHeight = sidebar.outerHeight(),
-                windowHeight = $(window).height(),
-                mainContentHeight = mainContent.outerHeight(),
-                scrollTop = $(window).scrollTop();
-
-            ( ( scrollTop + windowHeight > sidebarHeight ) && ( mainContentHeight - sidebarHeight != 0 ) ) ? sidebar.addClass('is-fixed').css('bottom', 0) : sidebar.removeClass('is-fixed').attr('style', '');
-        }
-        scrolling = false;
+    function fixGallery() {
+        var offsetTop = $('.cd-main-content').offset().top,
+            scrollTop = $(window).scrollTop();
+        ( scrollTop >= offsetTop ) ? $('.cd-main-content').addClass('is-fixed') : $('.cd-main-content').removeClass('is-fixed');
     }
 });

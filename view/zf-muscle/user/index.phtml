@@ -1,10 +1,11 @@
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
+        <h1 class="page-header">Manage Users</h1>
         <!-- START PANEL -->
         <div class="panel">
             <div class="panel-heading">
                 <!--<div class="panel-title">Users</div>-->
-                <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-user'), 'register'); ?>
+                <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/users/add']); ?>
                 <?php if (isset($result['allow']) && $result['allow'] == true): ?>
                     <button class="btn btn-primary btn-xs pull-right m-b-10" onClick="window.location='<?php echo $this->url('zfmuscle/permission/users/add') ?>';" title="Add new user">
                         <i class="glyphicon glyphicon-plus-sign"></i>&nbsp;&nbsp;Add new

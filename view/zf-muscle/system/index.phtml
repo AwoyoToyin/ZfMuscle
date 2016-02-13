@@ -1,5 +1,6 @@
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
+        <h1 class="page-header">System Configuration</h1>
         <!-- START PANEL -->
         <div class="panel">
 <!--            <div class="panel-heading">
@@ -23,7 +24,7 @@
                             <tr>
                                 <td class="v-align-middle semi-bold">System Role Resources</td>
                                 <td class="v-align-middle semi-bold" nowrap="nowrap">
-                                    <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-system'), 'update-resource'); ?>
+                                    <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/system/resource']); ?>
                                     <?php if (isset($result['allow']) && $result['allow'] == true): ?>
                                         <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/system/resource') ?>" title="Update">
                                             <i class="glyphicon glyphicon-forward"></i> Update

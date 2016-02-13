@@ -4,6 +4,7 @@ namespace ZfMuscle\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use ZfMuscle\Controller\CrudControllerInterface;
+use ZfMuscle\Entity\ZfMuscleEntityInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
 
@@ -62,11 +63,11 @@ abstract class AbstractSecuredActionController extends AbstractActionController 
 
     public function onDispatch(MvcEvent $e)
     {
-        $action = $this->params('action');
-        if (!in_array($action, $this->publicActions) && !$this->hasIdentity())
-        {
-            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
-        }
+//        $action = $this->params('action');
+//        if (!in_array($action, $this->publicActions) && !$this->hasIdentity())
+//        {
+//            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+//        }
         
         $this->layout('layout/dashboard');
         

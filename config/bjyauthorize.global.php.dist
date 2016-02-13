@@ -48,14 +48,17 @@ return [
         // resource providers provide a list of resources that will be tracked
         // in the ACL. like roles, they can be hierarchical
         'resource_providers' => [
-//            'zfmuscle_resource_provider_adapter' => [
-//                'object_manager' => 'doctrine.entitymanager.orm_default'
-//            ],
+            'zfmuscle_resource_provider_adapter' => [
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'rule_entity_class' => 'ZfMuscle\Entity\Resource'
+            ],
             \BjyAuthorize\Provider\Resource\Config::class => [
-                'zfmuscle' => [],
-                'zfmuscle-user' => [],
-                'zfmuscle-dashboard' => [],
-                'zfmuscle-system' => [],
+//                'zfmuscle'              => [],
+//                'zfmuscle-user'         => [],
+//                'zfmuscle-dashboard'    => [],
+//                'zfmuscle-system'       => [],
+//                'zfcuser'               => [],
+//                'Application\Controller\Index'  => [],
             ],
         ],
 
@@ -133,18 +136,18 @@ return [
 
 
                 // zfmuscle guest routes
-                ['route' => 'zfmuscle', 'roles' => ['guest']],
+//                ['route' => 'zfmuscle', 'roles' => ['guest']],
                 ['route' => 'zfmuscle/install', 'roles' => ['guest']],
-                ['route' => 'zfmuscle/dashboard', 'roles' => ['guest']],
+//                ['route' => 'zfmuscle/dashboard', 'roles' => ['guest']],
                 ['route' => 'zfmuscle/users/login', 'roles' => ['guest']],
-                ['route' => 'zfmuscle/users/logout', 'roles' => ['guest']],
+//                ['route' => 'zfmuscle/users/logout', 'roles' => ['guest']],
             ],
         ],
     ],
     'service_manager' => [
         'factories' => [
             'zfmuscle_route_guard_adapter'          => 'ZfMuscle\Factory\DoctrineRouteGuardAdapterFactory',
-//            'zfmuscle_resource_provider_adapter'    => 'ZfMuscle\Factory\DoctrineResourceProviderAdapterFactory',
+            'zfmuscle_resource_provider_adapter'    => 'ZfMuscle\Factory\DoctrineResourceProviderAdapterFactory',
             'zfmuscle_rule_provider_adapter'        => 'ZfMuscle\Factory\DoctrineRuleProviderAdapterFactory',
         ]
     ],

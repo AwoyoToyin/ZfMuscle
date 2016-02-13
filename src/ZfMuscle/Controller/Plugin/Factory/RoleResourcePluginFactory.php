@@ -11,6 +11,7 @@ class RoleResourcePluginFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $pluginManager)
     {
         $serviceLocator = $pluginManager->getServiceLocator();
-        return new RoleResourcePlugin($serviceLocator);
+        $config = $serviceLocator->get('ZfMuscle\Config');
+        return new RoleResourcePlugin($config, $serviceLocator);
     }
 }

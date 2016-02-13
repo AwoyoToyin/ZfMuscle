@@ -11,7 +11,7 @@ use ZfMuscle\Service\AbstractCrudService;
  */
 class RoleService extends AbstractCrudService
 {
-    public function index($page=1, array $filters=array())
+    public function index($page=1, array $filters=[])
     {
         return parent::index($page, $filters);
     }

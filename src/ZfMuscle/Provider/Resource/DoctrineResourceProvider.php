@@ -3,6 +3,7 @@
 namespace ZfMuscle\Provider\Resource;
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use ZfMuscle\Service\ResourceService;
 use BjyAuthorize\Provider\Resource\ProviderInterface;
 
 /**
@@ -11,9 +12,9 @@ use BjyAuthorize\Provider\Resource\ProviderInterface;
 class DoctrineResourceProvider implements ProviderInterface {
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository
+     * @var \ZfMuscle\Service\ResourceService
      */
-    protected $objectRepository;
+    protected $service;
 
     /**
      * @var \Doctrine\ORM\EntityManaager
@@ -21,10 +22,11 @@ class DoctrineResourceProvider implements ProviderInterface {
     protected $objectManager;
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectRepository $objectRepository            
+     * @param \ZfMuscle\Service\ResourceService $service
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
      */
-    public function __construct(ObjectRepository $objectRepository, $objectManager) {
-        $this->objectRepository = $objectRepository;
+    public function __construct(ResourceService $service, $objectManager) {
+        $this->service = $service;
         $this->objectManager = $objectManager;
     }
 
@@ -34,38 +36,22 @@ class DoctrineResourceProvider implements ProviderInterface {
      */
     public function getResources()
     {
-        $resources = array();
+        $resources = [];
         // get the doctrine shemaManager
         $schemaManager = $this->objectManager->getConnection()->getSchemaManager();
         
         // check if the roles table exists, if it does not, do not bother querying
-        if ($schemaManager->tablesExist(array('object_repository_controllers')) === true)
+        if ($schemaManager->tablesExist(['admin_rule']) === true)
         {
             //read from object store a set of (controller)
-            $result = $this->objectRepository->findAll();
-            
+            $result = $this->service->fetchAllResources([], [], ['controller_id']);
             // if a result set exists
             if (count($result))
             {
                 //transform to object BjyAuthorize will understand
                 foreach ($result as $resource)
                 {
-                    // if controller contains '-', replace with nothing and set next character to uppercase
-//                    $alias = $resource->getAlias();
-//                    if (strpos($alias, '-') !== FALSE)
-//                    {
-//                        $stringArray = explode('-', $alias);
-//                        foreach ($stringArray as $key => $value)
-//                        {
-//                            $stringArray[$key] = ucfirst($value);
-//                        }
-//                        $alias = implode('', $stringArray);
-//                    }
-//                    else
-//                    {
-//                        $alias = ucfirst($resource->getAlias());
-//                    }
-                    $resources[$resource->getAlias()] = array();
+                    $resources[$resource->getControllerId()] = [];
                 }
             }
         }

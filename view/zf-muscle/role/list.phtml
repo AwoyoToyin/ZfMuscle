@@ -38,15 +38,15 @@
                         <td class="v-align-middle"><?php echo $role->getParent() ? $role->getParent()->getRoleId() : ''; ?></td>
 
                         <td class="v-align-middle semi-bold" nowrap="nowrap">
-                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-role'), 'entry'); ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/roles/edit']); ?>
                             <?php if (isset($result['allow']) && $result['allow'] == true): ?>
-                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/edit', array('id' => $role->getId())) ?>" title="Edit Role">
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/edit', ['id' => $role->getId()]) ?>" title="Edit Role">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </a>
                             <?php endif; ?>
-                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-role'), 'delete'); ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/roles/delete']); ?>
                             <?php if (isset($result['allow']) && $result['allow'] == true): ?>
-                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/delete', array('id' => $role->getId())) ?>" title="Delete Role">
+                                <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/roles/delete', ['id' => $role->getId()]) ?>" title="Delete Role">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             <?php endif; ?>

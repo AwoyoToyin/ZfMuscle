@@ -8,350 +8,339 @@ namespace ZfMuscle;
  * @author: Awoyo Oluwatoyin Stephen alias talk2toyin / muscle53 <awoyotoyin@gmail.com>
  */
 return array(
-    'controllers' => array(
-        'invokables' => array(
+    'controllers' => [
+        'invokables' => [
             'zfmuscle-system' => 'ZfMuscle\Controller\SystemController',
             'zfmuscle-role' => 'ZfMuscle\Controller\RoleController',
             'zfmuscle-dashboard' => 'ZfMuscle\Controller\DashboardController',
-        )
-    ),
-    'router' => array(
-        'routes' => array(
-            'zfmuscle' => array(
+        ]
+    ],
+    'router' => [
+        'routes' => [
+            'zfmuscle' => [
                 'type'    => 'Literal',
-                'options' => array(
+                'options' => [
                     'route'    => '/zfmuscle',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller'    => 'zfmuscle-dashboard',
                         'action'        => 'index',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'install' => array(
+                'child_routes' => [
+                    'install' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/install[/]',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfmuscle',
                                 'action'     => 'index',
-                            ),
-                        ),
-                    ),
-                    'dashboard' => array(
+                            ],
+                        ],
+                    ],
+                    'dashboard' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/dashboard',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfmuscle-dashboard',
                                 'action'     => 'index',
-                            ),
-                        ),
-                    ),
-                    'system' => array(
+                            ],
+                        ],
+                    ],
+                    'system' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/system/config',
-                            'defaults' => array(
+                            'defaults' => [
                                 'controller' => 'zfmuscle-system',
                                 'action'     => 'index',
-                            ),
-                        ),
+                            ],
+                        ],
                         'may_terminate' => true,
-                        'child_routes' => array(
-                            'resource' => array(
+                        'child_routes' => [
+                            'resource' => [
                                 'type' => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/resources/update',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         'controller' => 'zfmuscle-system',
                                         'action'     => 'update-resource',
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                    'users' => array(
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'users' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/users',
 //                            'defaults' => array(
 //                                'controller' => 'zfmuscle-user',
 //                                'action'     => 'index',
 //                            ),
-                        ),
+                        ],
                         'may_terminate' => true,
-                        'child_routes' => array(
-                            'login' => array(
+                        'child_routes' => [
+                            'login' => [
                                 'type' => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/login',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         'controller' => 'zfmuscle-user',
                                         'action'     => 'login',
-                                    ),
-                                ),
-                            ),
-                            'logout' => array(
+                                    ],
+                                ],
+                            ],
+                            'logout' => [
                                 'type' => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/logout',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         'controller' => 'zfmuscle-user',
                                         'action'     => 'logout',
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                    'permission' => array(
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'permission' => [
                         'type' => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route' => '/permission',
 //                            'defaults' => array(
 //                                'controller' => 'zfmuscle-user',
 //                                'action'     => 'index',
 //                            ),
-                        ),
+                        ],
                         'may_terminate' => true,
-                        'child_routes' => array(
-                            'users' => array(
+                        'child_routes' => [
+                            'users' => [
                                 'type' => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/users',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         'controller' => 'zfmuscle-user',
                                         'action'     => 'index',
-                                    ),
-                                ),
+                                    ],
+                                ],
                                 'may_terminate' => true,
-                                'child_routes' => array(
-                                    'index' => array(
+                                'child_routes' => [
+                                    'index' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/[page/:page]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'page' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'index',
-                                            ),
-                                        ),
-                                    ),
-                                    'view' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'view' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/view[/:id]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'id' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'register',
-                                            ),
-                                        ),
-                                    ),
-                                    'add' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'add' => [
                                         'type' => 'Literal',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/add',
-                                            'defaults' => array(
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'register',
-                                            ),
-                                        ),
-                                    ),
-                                    'edit' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'edit' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/edit[/:id]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'id' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'register',
-                                            ),
-                                        ),
-                                    ),
-                                    'delete' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'delete' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/delete[/:id]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'id' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'delete',
-                                            ),
-                                        ),
-                                    ),
-                                    'logout' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'logout' => [
                                         'type' => 'Literal',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/logout',
-                                            'defaults' => array(
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-user',
                                                 'action'     => 'logout',
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            'roles' => array(
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'roles' => [
                                 'type' => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/roles',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         'controller' => 'zfmuscle-role',
                                         'action'     => 'index',
-                                    ),
-                                ),
+                                    ],
+                                ],
                                 'may_terminate' => true,
-                                'child_routes' => array(
-                                    'index' => array(
+                                'child_routes' => [
+                                    'index' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/[page/:page]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'page' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-role',
                                                 'action'     => 'index',
-                                            ),
-                                        ),
-                                    ),
-                                    'add' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'add' => [
                                         'type' => 'Literal',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/add',
-                                            'defaults' => array(
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-role',
                                                 'action'     => 'entry',
-                                            ),
-                                        ),
-                                    ),
-                                    'edit' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'edit' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/edit[/:id]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'id' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-role',
                                                 'action'     => 'entry',
-                                            ),
-                                        ),
-                                    ),
-                                    'delete' => array(
+                                            ],
+                                        ],
+                                    ],
+                                    'delete' => [
                                         'type' => 'Segment',
-                                        'options' => array(
+                                        'options' => [
                                             'route' => '/delete[/:id]',
-                                            'constraints' => array(
+                                            'constraints' => [
                                                 'id' => '[0-9]*',
-                                            ),
-                                            'defaults' => array(
+                                            ],
+                                            'defaults' => [
                                                 'controller' => 'zfmuscle-role',
                                                 'action'     => 'delete',
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'service_manager' => array(
-        'abstract_factories' => array(
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'service_manager' => [
+        'abstract_factories' => [
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
-        ),
-        'factories' => array(
-            'navigation'                => 'Zend\Navigation\Service\DefaultNavigationFactory',
-            'ZfMuscle\Config'           => 'ZfMuscle\Service\ConfigServiceFactory',
-            'ZfMuscle\App\Config'       => 'ZfMuscle\Service\ApplicationServiceFactory',
-            'BjyAuthorize\Guard\Route'  => 'ZfMuscle\Service\ApplicationGuardServiceFactory',
-        ),
-        'invokables' => array(
+        ],
+        'factories' => [
+            'navigation'                    => 'Zend\Navigation\Service\DefaultNavigationFactory',
+            'ZfMuscle\Config'               => 'ZfMuscle\Service\ConfigServiceFactory',
+            'ZfMuscle\App\Config'           => 'ZfMuscle\Service\ApplicationServiceFactory',
+            'ZfMuscle\Service\RoleResource' => 'ZfMuscle\Service\Factory\RoleResourceFactory',
+            'BjyAuthorize\Guard\Route'      => 'ZfMuscle\Service\Factory\ApplicationGuardServiceFactory',
+        ],
+        'invokables' => [
+//            'BjyAuthorize\View\RedirectionStrategy' => 'ZfMuscle\View\RedirectionStrategy',
 //            'ZfMuscle\Event\Listener\Application' => 'ZfMuscle\Event\Listener\Application',
 //            'ZfMuscle\Event\Listener\UserListener' => 'ZfMuscle\Event\Listener\UserListener',
 //            'ZfMuscle\Event\Listener\RoleListener' => 'ZfMuscle\Event\Listener\RoleListener',
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Dashboard',
                 'route' => 'zfmuscle/dashboard',
-                'controller' => 'zfmuscle-dashboard',
-                'thumbnail' => 'pg-home'
-            ),
-            array(
+                'thumbnail' => 'glyphicon-home'
+            ],
+            [
                 'label' => 'System',
                 'uri' => '#',
-                'controller' => 'zfmuscle-system',
-                'thumbnail' => 'Sm',
-                'thumbnail_not_class' => true,
-                'pages' => array(
-                    array(
+                'route' => 'zfmuscle/system',
+                'thumbnail' => 'glyphicon-globe',
+                'pages' => [
+                    [
                         'label' => 'Config',
                         'route' => 'zfmuscle/system',
-                        'controller' => 'zfmuscle-system',
-                        'thumbnail' => 'Cf',
-                        'thumbnail_not_class' => true,
-                    ),
-                ),
-            ),
-            array(
+                        'thumbnail' => 'glyphicon-tasks',
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Permission',
                 'uri' => '#',
-                'controller' => 'zfmuscle-user,zfmuscle-role',
-                'thumbnail' => 'Ps',
-                'thumbnail_not_class' => true,
-                'pages' => array(
-                    array(
+                'route' => 'zfmuscle/permission/users,zfmuscle/permission/roles',
+                'thumbnail' => 'glyphicon-open-file',
+                'pages' => [
+                    [
                         'label' => 'Users',
                         'route' => 'zfmuscle/permission/users',
-                        'controller' => 'zfmuscle-user',
-                        'thumbnail' => 'Us',
-                        'thumbnail_not_class' => true,
-                    ),
-                    array(
+                        'thumbnail' => 'glyphicon-user',
+                    ],
+                    [
                         'label' => 'Roles',
                         'route' => 'zfmuscle/permission/roles',
-                        'controller' => 'zfmuscle-role',
-                        'thumbnail' => 'Rs',
-                        'thumbnail_not_class' => true,
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'template_map' => array(
-            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-            'error/403' => __DIR__ . '/../view/error/403.phtml',
-        ),
-        'template_path_stack' => array(
+                        'thumbnail' => 'glyphicon-signal',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
             'zfmuscle' => __DIR__ . '/../view',
-        ),
-        'strategies' => array(
+        ],
+        'strategies' => [
             'ViewJsonStrategy',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
-    'view_helpers' => array(
-        'invokables'=> array(
+    ],
+    'view_helpers' => [
+        'invokables'=> [
 //            'RoleResourceHelper' => 'ZfMuscle\Core\View\Helper\RoleResourceHelper',
-        )
-    ),
+        ]
+    ],
 //    'asset_manager' => array(
 //        'resolver_configs' => array(
 //            'collections' => array(
@@ -373,24 +362,24 @@ return array(
 //        ),
 //    ),
     
-    'doctrine' => array(
-        'driver' => array(
-            'zfmuscle_entity' => array(
+    'doctrine' => [
+        'driver' => [
+            'zfmuscle_entity' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => __DIR__ . '/../src/ZfMuscle/Entity',
-            ),
+            ],
  
-            'orm_default' => array(
-                'drivers' => array(
+            'orm_default' => [
+                'drivers' => [
                     'ZfMuscle\Entity' => 'zfmuscle_entity',
-                ),
-            ),
-        )
-    ),
-    'zfcuser' => array(
+                ],
+            ],
+        ]
+    ],
+    'zfcuser' => [
         // telling ZfcUser to use our own class
         'user_entity_class' => 'ZfMuscle\Entity\User',
         // telling ZfcUserDoctrineORM to skip the entities it defines
         'enable_default_entities' => false,
-    ),
+    ],
 );

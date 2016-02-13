@@ -23,20 +23,40 @@ class Module
         $appConfig      = $sm->get('ZfMuscle\App\Config');  // get application.config
         foreach ($appConfig['listeners'] as $key => $listener)
         {
-            $app->getEventManager()->attach($sm->get($listener));
+            $eventManager->attach($sm->get($listener));
         }
 
 
+        // update user form with more fields
+        $zfcServiceEvents = $this->updateUserForm($sm, $sharedManager);
 
+        // Store the field
+        $this->storeFormUpdateValue($sm, $zfcServiceEvents);
+
+
+        $moduleRouteListener = new ModuleRouteListener();
+        $moduleRouteListener->attach($eventManager);
+
+        // Show flash messages in the view
+        $this->attachFlashMessenger($eventManager);
+    }
+
+    /**
+     * @param $sm
+     * @param $sharedManager
+     * @return mixed
+     */
+    public function updateUserForm($sm, $sharedManager)
+    {
         $zfcServiceEvents = $sm->get('zfcuser_user_service')->getEventManager();
         // To validate new field
-        $sharedManager->attach('ZfcUser\Form\RegisterFilter','init', function($e) {
+        $sharedManager->attach('ZfcUser\Form\RegisterFilter', 'init', function ($e) {
             $filter = $e->getTarget();
             $filter->add(array(
-                'name'       => 'firstname',
-                'required'   => true,
+                'name' => 'firstname',
+                'required' => true,
                 'allowEmpty' => false,
-                'filters'    => array(array('name' => 'StringTrim')),
+                'filters' => array(array('name' => 'StringTrim')),
                 'validators' => array(
                     array(
                         'name' => 'NotEmpty',
@@ -44,10 +64,10 @@ class Module
                 ),
             ));
             $filter->add(array(
-                'name'       => 'lastname',
-                'required'   => true,
+                'name' => 'lastname',
+                'required' => true,
                 'allowEmpty' => false,
-                'filters'    => array(array('name' => 'StringTrim')),
+                'filters' => array(array('name' => 'StringTrim')),
                 'validators' => array(
                     array(
                         'name' => 'NotEmpty',
@@ -55,11 +75,18 @@ class Module
                 ),
             ));
         });
+        return $zfcServiceEvents;
+    }
 
-        // Store the field
+    /**
+     * @param $sm
+     * @param $zfcServiceEvents
+     */
+    public function storeFormUpdateValue($sm, $zfcServiceEvents)
+    {
         $entityManager = $sm->get('doctrine.entitymanager.orm_default');
 
-        $zfcServiceEvents->attach('register', function($e) use ($entityManager) {
+        $zfcServiceEvents->attach('register', function ($e) use ($entityManager) {
             $form = $e->getParam('form');
             $user = $e->getParam('user');
 
@@ -68,19 +95,19 @@ class Module
             $user->setFirstname($form->get('firstname')->getValue());
 
             // if user role field exists
-            if ($form->get('role')->getValue())
-            {
+            if ($form->get('role')->getValue()) {
                 $role = $entityManager->getReference('ZfMuscle\Entity\Role', $form->get('role')->getValue());
                 $user->addRole($role);
             }
         });
+    }
 
-
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-
-        // Show flashmessages in the view
-        $eventManager->attach(MvcEvent::EVENT_RENDER, function($e) {
+    /**
+     * @param $eventManager
+     */
+    public function attachFlashMessenger($eventManager)
+    {
+        $eventManager->attach(MvcEvent::EVENT_RENDER, function ($e) {
             $flashMessenger = new FlashMessenger;
 
             $messages = array();
@@ -166,13 +193,13 @@ class Module
             'invokables' => array(
                 
             ),
-            'factories' => array(
+            'factories' => [
                 'Zend\Authentication\AuthenticationService' => function($sm) {
                     return $sm->get('doctrine.authenticationservice.orm_default');
                 },
                 'zfcuser_module_options' => function ($sm) {
                     $config = $sm->get('Configuration');
-                    return new \ZfMuscle\Options\ModuleOptions(isset($config['zfcuser']) ? $config['zfcuser'] : array());
+                    return new \ZfMuscle\Options\ModuleOptions(isset($config['zfcuser']) ? $config['zfcuser'] : []);
                 },
                 'zfmuscle_user_service' => function ($sm) {
                     $service = new \ZfMuscle\Service\UserService();
@@ -206,6 +233,7 @@ class Module
                 'zfmuscle_application_service' => function ($sm) {
                     $service = new \ZfMuscle\Service\ApplicationService();
                     $service->setServiceManager($sm);
+                    $service->setXmlInstallPath("config".DIRECTORY_SEPARATOR."local.xml");
                     return $service;
                 },
                 'zfcuser_login_form' => function ($sm) {
@@ -220,14 +248,14 @@ class Module
                     $form = new \ZfMuscle\Form\User($em, null, $options);
 //                    $form->setCaptchaElement($sm->get('zfcuser_captcha_element'));
                     $form->setInputFilter(new \ZfcUser\Form\RegisterFilter(
-                        new \ZfcUser\Validator\NoRecordExists(array(
+                        new \ZfcUser\Validator\NoRecordExists([
                             'mapper' => $sm->get('zfcuser_user_mapper'),
                             'key'    => 'email'
-                        )),
-                        new \ZfcUser\Validator\NoRecordExists(array(
+                        ]),
+                        new \ZfcUser\Validator\NoRecordExists([
                             'mapper' => $sm->get('zfcuser_user_mapper'),
                             'key'    => 'username'
-                        )),
+                        ]),
                         $options
                     ));
                     return $form;
@@ -242,7 +270,7 @@ class Module
                     $hydrator = new \Zend\Stdlib\Hydrator\ClassMethods();
                     return $hydrator;
                 },
-            ),
+            ],
         );
     }
 }

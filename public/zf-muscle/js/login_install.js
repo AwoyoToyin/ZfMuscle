@@ -5,22 +5,12 @@ $(function ()
         success: "valid"
     });
     
-    var $target; // to hold element to display ajax response
-    
-    var $action; // to hold our type of effect
-    var $actionOn; // to hold the element to perform effect on
-    
+    var $target = $('#flash-message'); // to hold element to display ajax response
     var $loading = $('#loading'); // to hold our loading gif
-    
     var $form; // to hold our form
-    
-    var position = 'top'; // to hold our notification position, default to 'top-right'
-    var style = 'bar'; // to hold our notification style, default to 'bar'
-    var type = 'info';
-    var title;
-    var timeout = 4000; // timeout for notification, default to 4sec
-    
     var $url; // to hold redirect urls
+    var obj;
+    var bgColor = "bg-danger";
     
     
     // Binding Role Resources to an event
@@ -32,14 +22,13 @@ $(function ()
     /**
      * Display flashmessanger if not empty
      */
-    type = $('#flash-type').html();
-    var $msg = $('#flash-message').html();
-    if ($msg)
+    var message = $('#flash-message').html();
+    if (message)
     {
-        var $flashObj = {
-            'message' : $msg
+        obj = {
+            'message': message
         };
-        showNotify($flashObj);
+        showNotify(obj);
     }
     
 //    $("#flashmessage-main").slideDown("slow", function () {
@@ -119,48 +108,21 @@ $(function ()
             }
         },
         submitHandler: function(form) {
-            $target = $('#result');
-            $action = 'fadeOut';
-            $actionOn = $('#login');
             $form = $('#form-login');
-            
             $.ajax({
                 type: "POST",
                 url: form.action,
                 data: $form.serialize(),
                 beforeSend: function()
                 {
-                    $loading.show("slow", function()
-                    {
-                        $('.login-container').fadeTo("slow", 0.3, function()
-                        {
-                        }).delay(5000);
-                    }).delay(3000);
+                    $('#login').attr('disabled', 'disabled');
+                    toggleAjaxLoader();
                 }
             })
             .done(function(data)
             {
-                position = 'top-right';
-                
-                if (data.status === "ERROR")
-                {
-                    type = 'danger';
-                    style = 'flip';
-                }
-                else if (data.status === "SUCCESS")
-                {
-                    type = 'info';
-                    title = data.name;
-                    style = 'circle';
-                }
-        
-                $('.login-container').fadeTo("slow", 1, function()
-                {
-                    $loading.hide("slow", function()
-                    {
-                        showNotify(data);
-                    }).delay(3000);
-                });
+                toggleAjaxLoader(data);
+                $('#login').removeAttr('disabled');
             });
         }
     });
@@ -219,33 +181,14 @@ $(function ()
                 data: $form.serialize(),
                 beforeSend: function()
                 {
-                    $loading.show("slow", function()
-                    {
-                        $('.page-content-wrapper').fadeTo("slow", 0.3, function()
-                        {
-                        }).delay(5000);
-                    }).delay(3000);
+                    $('#install').attr('disabled', 'disabled');
+                    toggleAjaxLoader();
                 }
             })
             .done(function(data)
             {
-                timeout = 6000;
-                if (data.status === "ERROR")
-                {
-                    type = 'danger';
-                }
-                else if (data.status === "SUCCESS")
-                {
-                    type = 'success';
-                }
-                
-                $('.page-content-wrapper').fadeTo("slow", 1, function()
-                {
-                    $loading.hide("slow", function()
-                    {
-                        showNotify(data);
-                    }).delay(3000);
-                });
+                toggleAjaxLoader(data);
+                $('#install').removeAttr('disabled');
             });
         }
     });
@@ -272,33 +215,14 @@ $(function ()
                 data: $form.serialize(),
                 beforeSend: function()
                 {
-                    $loading.show("slow", function()
-                    {
-                        $('.page-content-wrapper').fadeTo("slow", 0.3, function()
-                        {
-                        }).delay(5000);
-                    }).delay(3000);
+                    $('#addrole').attr('disabled', 'disabled');
+                    toggleAjaxLoader();
                 }
             })
             .done(function(data)
             {
-                timeout = 6000;
-                if (data.status === "ERROR")
-                {
-                    type = 'danger';
-                }
-                else if (data.status === "SUCCESS")
-                {
-                    type = 'success';
-                }
-                
-                $('.page-content-wrapper').fadeTo("slow", 1, function()
-                {
-                    $loading.hide("slow", function()
-                    {
-                        showNotify(data);
-                    }).delay(3000);
-                });
+                toggleAjaxLoader(data);
+                $('#addrole').removeAttr('disabled');
             });
         }
     });
@@ -320,39 +244,30 @@ $(function ()
     
     function showNotify(response)
     {
-        if (style === 'flip')
+        if ($target.is(':hidden') === false)
         {
-            $('body').pgNotification({
-                style: style,
-                message: response.message,
-                position: position,
-                timeout: timeout,
-                type: type,
-                onClose: is_redirect(response.redirect)
-            }).show();
+            if ($target.hasClass(bgColor))
+            {
+                $target.removeClass(bgColor);
+            }
+            $target.slideUp("fast");
         }
-        else if (style === 'circle')
+
+        if (response.status === "ERROR")
         {
-            $('body').pgNotification({
-                style: style,
-                title: title,
-                message: response.message,
-                position: position,
-                timeout: timeout,
-                type: type,
-                onClose: is_redirect(response.redirect)
-            }).show();
+            bgColor = "bg-danger";
         }
-        else if (style === 'bar')
+        else if (response.status === "SUCCESS")
         {
-            $('body').pgNotification({
-                style: style,
-                message: response.message,
-                position: position,
-                timeout: timeout,
-                type: type,
-                onClose: is_redirect(response.redirect)
-            }).show();
+            bgColor = "bg-success";
+        }
+
+        $target.addClass(bgColor);
+
+        $target.html(response.message).slideDown("slow");
+        if (response.redirect)
+        {
+            is_redirect(response.redirect);
         }
     }
     
@@ -367,6 +282,28 @@ $(function ()
             }, 5000);
         }
         return false;
+    }
+
+    function toggleAjaxLoader(response)
+    {
+        if (($loading).is(":hidden") === true)
+        {
+            $loading.show("slow", function ()
+            {
+                $('body').addClass("body-overlay").delay(5000);
+            }).delay(3000);
+        }
+        else
+        {
+            $loading.hide("slow", function()
+            {
+                if (response.message !== null)
+                {
+                    showNotify(response);
+                }
+                $('body').removeClass("body-overlay");
+            }).delay(3000);
+        }
     }
     
     $("#username").focus(function() {

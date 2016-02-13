@@ -1,0 +1,79 @@
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+<?php if ($this->pageCount): ?>
+    <!-- Previous page link -->
+    <?php if (isset($this->previous)): ?>
+        <a href="<?php echo $this->url($this->route, array('page' => $this->previous)); ?>">
+            <i class="pg-arrow_left"></i> Previous
+        </a>
+    <?php else: ?>
+        <span><i class="pg-arrow_left"></i> Previous</span>
+    <?php endif; ?>
+
+    <!-- Numbered page links -->
+    <?php foreach ($this->pagesInRange as $page): ?>
+        <?php if ($page == $this->current): ?>
+            <span><?php echo $page; ?></span>
+        <?php else: ?>
+            <a class="active" href="<?php echo $this->url($this->route, array('page' => $page)); ?>">
+                <?php echo $page; ?>
+            </a>
+        <?php endif; ?>
+    <?php endforeach; ?>
+
+    <!-- Next page link -->
+    <?php if (isset($this->next)): ?>
+        <a href="<?php echo $this->url($this->route, array('page' => $this->next)); ?>">
+            Next <i class="pg-arrow_right"></i>
+        </a>
+    <?php else: ?>
+        <span>Next <i class="pg-arrow_right"></i></span>
+    <?php endif; ?>
+        
+<?php endif; ?>
+
+
+
+<!--
+See http://developer.yahoo.com/ypatterns/pattern.php?pattern=searchpagination
+-->
+
+
+<!--<div class="dataTables_paginate paging_bootstrap pagination">
+    <ul>-->
+<!-- Previous page link -->
+<?php // if (isset($this->previous)): ?>
+<!--            <li class="prev">
+                <a href="<?php // echo $this->url($this->route, array('page' => $this->previous));    ?>"><i class="pg-arrow_left"></i></a>
+            </li>-->
+<?php // else: ?>
+<!--            <li class="prev">
+                <a href="#"><i class="pg-arrow_left"></i></a>
+            </li>-->
+<?php // endif; ?>
+<!-- Previous page link ends -->
+
+<!-- Numbered page links -->
+<?php // foreach ($this->pagesInRange as $page): ?>
+    <!--<li <?php // echo ($page == $this->current) ? ' class="active"' : '';    ?>>-->
+        <!--<a href="<?php // echo $this->url($this->route, array('page' => $page));    ?>"><?php echo $page; ?></a>-->
+<!--</li>-->
+<?php // endforeach; ?>
+<!-- Numbered page links ends -->
+
+<!-- Next page link -->
+<?php // if (isset($this->next)): ?>
+<!--            <li class="next">
+                <a href="<?php // echo $this->url($this->route, array('page' => $this->next));    ?>"><i class="pg-arrow_right"></i></a>
+            </li>-->
+<?php // else: ?>
+<!--            <li class="next">
+                <a href="#"><i class="pg-arrow_right"></i></a>
+            </li>-->
+<?php // endif; ?>
+<!-- Next page link ends -->
+
+</ul>
+</div>

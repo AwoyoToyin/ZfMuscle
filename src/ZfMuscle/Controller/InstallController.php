@@ -4,6 +4,7 @@ namespace ZfMuscle\Controller;
 
 use Zend\View\Model\ViewModel;
 use ZfcUser\Controller\UserController as ZfcUserController;
+use ZfMuscle\Entity\ZfMuscleEntityInterface;
 use Zend\Mvc\MvcEvent;
 
 /**
@@ -19,7 +20,7 @@ class InstallController extends ZfcUserController
      * Route to login page
      */
     const ROUTE_LOGIN = 'zfmuscle/users/login'; //\ZfcUser\Controller\UserController::ROUTE_LOGIN;
-    
+
     protected $service;
 
     /**
@@ -38,47 +39,7 @@ class InstallController extends ZfcUserController
 
     public function onDispatch(MvcEvent $e)
     {
-        /**
-         * If no administrative user exists in the database,
-         * then redirect to register page for a first time run
-         */
-        $filters = array();
-        $users = $this->_getUsers($filters);
-        if (!$users)
-        {
-            /**
-             * Since it is assumed that this is our installation,
-             * We need to insert our default roles in the database
-             * since who ever installs this app is considered an administrator
-             */
-            $roleService = $this->getRoleService();
-            $roles = $this->getDefaultRoles();
-
-            // if the returned value is an array and it isn't empty
-            if (is_array($roles) && $roles)
-            {
-                try
-                {
-                    $lastId = '';
-                    foreach ($roles as $role)
-                    {
-                        $lastId = $roleService->save($role, true, $lastId)->getId();
-                    }
-                }
-                catch (Exception $ex)
-                {
-                    var_dump($ex); die;
-                }
-            }
-
-            $this->publicActions[] = 'index';
-            $this->layout('layout/login_register');
-        }
-        else
-        {
-            $this->layout('layout/login_register');
-            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
-        }
+        $this->layout('layout/login_register');
         
         /** INSTANTIATE FLASH MESSENGER **/
         $this->flashMessenger = $this->flashMessenger();
@@ -105,7 +66,7 @@ class InstallController extends ZfcUserController
         try
         {
             $request = $this->getRequest();
-            $service = $this->getUserService();
+            $service = $this->getService('zfmuscle_user_service');
             $form = $this->getRegisterForm();
             
 //            var_dump($form); die;
@@ -132,17 +93,23 @@ class InstallController extends ZfcUserController
                  * Since it is assumed that this is our installation,
                  * We need to set our first user role to administrator
                  */
-                $roleService = $this->getRoleService();
-                $adminRole = $roleService->getDefaultAdminRole();
+                $roleService = $this->getService('zfmuscle_role_service');
+                $adminRoleId = $roleService->getDefaultAdminRole();
                 
-                if ($adminRole)
+                if ($adminRoleId)
                 {
                     $data = array(
                         'id' => $user,
-                        'role' => $adminRole,
+                        'role' => $adminRoleId,
                     );
-                    $this->getService()->save($data);
+                    $service->save($data);
                 }
+
+                /**
+                 * Generate Installation File
+                 */
+                $appService = $this->getService('zfmuscle_application_service');
+                $appService->generateXml(); // generate the file
                 
                 $this->flashMessenger->setNamespace('success');
                 $this->flashMessenger->addMessage('Congratulations! Your Application is ready. Please login below for access to more control.');
@@ -159,17 +126,12 @@ class InstallController extends ZfcUserController
         );
     }
 
-    public function getService()
+    public function getService($definition)
     {
         if (!$this->service instanceof ZfMuscleEntityInterface) {
-            $this->service = $this->getServiceLocator()->get('zfmuscle_user_service');
+            $this->service = $this->getServiceLocator()->get($definition);
         }
         return $this->service;
-    }
-
-    protected function getRoleService()
-    {
-        return $this->getServiceLocator()->get('zfmuscle_role_service');
     }
     
     /**

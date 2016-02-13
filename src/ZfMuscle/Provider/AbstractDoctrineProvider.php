@@ -53,20 +53,24 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
     public function getEntityManager() {
         return $this->em;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \ZfMuscle\Provider\ProviderInterface::selectAll()
+     * @param array $filters
+     * @param array $orderBy
+     * @param array $groupBy
+     * @return \Doctrine\ORM\QueryBuilder|Selection
      */
-    public function selectAll(array $filters = array(), $orderBy=array()){
+    public function selectAll(array $filters = [], $orderBy = [], $groupBy = []){
         $selection = $this->getEntityManager()->createQueryBuilder();
     
-        $selection->select(array($this->entityAlias))
+        $selection->select([$this->entityAlias])
                 ->from($this->entityClass, $this->entityAlias);
     
         if(!empty($filters)){
             $pc = 1;
-            $params = array();
+            $params = [];
     
             foreach($filters as $field => $specs){
                 switch ($specs['strategy']){
@@ -100,7 +104,14 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
              
             $selection->setParameters($params);
         }
-    
+
+        if (!empty($groupBy))
+        {
+            foreach ($groupBy as $field){
+                $selection->groupBy($this->entityAlias.'.'.$field);
+            }
+        }
+
         if (!empty($orderBy))
         {
             foreach ($orderBy as $field => $dir){
@@ -110,18 +121,23 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
         
         return $selection;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \ZfMuscle\Provider\ProviderInterface::selectJoin()
+     * @param array $filters
+     * @param array $joins
+     * @param array $orderBy
+     * @param array $groupBy
+     * @return \Doctrine\ORM\QueryBuilder
      */
-    public function selectJoin(array $filters = array(), $joins = array(), $orderBy=array())
+    public function selectJoin(array $filters = [], $joins = [], $orderBy = [], $groupBy = [])
     {
         try
         {
             $selection = $this->getEntityManager()->createQueryBuilder();
 
-            $aliases = array();
+            $aliases = [];
             $aliases[] = $this->entityAlias;
 
             foreach ($joins as $table => $attributes)
@@ -146,7 +162,7 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
             if(!empty($filters))
             {
                 $pc = 1;
-                $params = array();
+                $params = [];
 
                 foreach($filters as $field => $specs)
                 {
@@ -183,6 +199,13 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
                 $selection->setParameters($params);
             }
 
+            if (!empty($groupBy))
+            {
+                foreach ($groupBy as $field){
+                    $selection->groupBy($this->entityAlias.'.'.$field);
+                }
+            }
+
             foreach ($orderBy as $field => $dir){
                 $selection->orderBy($field, $dir);
             }
@@ -205,7 +228,8 @@ abstract class AbstractDoctrineProvider extends ZfMuscleAbstractProvider
     /**
      * Gets the adapter for \Zend\Paginator\Paginator
      * 
-     * @param unknown $query
+     * @param unknown $selection
+     * @return object DoctrineORMModule\Paginator\Adapter\DoctrinePaginator
      */
     public function getPaginatorAdapter($selection){
         return new DoctrinePaginator(new ORMPaginator($selection));

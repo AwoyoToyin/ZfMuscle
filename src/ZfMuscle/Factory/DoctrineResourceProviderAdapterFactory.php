@@ -35,12 +35,11 @@ class DoctrineResourceProviderAdapterFactory implements FactoryInterface {
 
         //orp -- object repository provider
         //here we get our class that preps the object repository for us
-        $orp = new DoctrineResourceProvider($objectManager->getRepository($providerConfig['rule_entity_class']), $objectManager);
+        $orp = new DoctrineResourceProvider($serviceLocator->get('zfmuscle_resource_service'), $objectManager);
 
         //here we pull the rules out of that object we've created above
         //rules are in the same format BjyAuthorize expects
         $resources = $orp->getResources();
-//        var_dump($resources); die;
         
         //here pass our resources to BjyAuthorize's own Resource Config.  
         //It will not know the difference if we got the rules from Config or from Doctrine or elsewhere,  

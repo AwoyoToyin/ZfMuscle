@@ -24,12 +24,12 @@ $form->setAttribute('autocomplete', 'off');
 
         <?php echo $this->form()->openTag($form) ?>
 
-        <h2 class="text-center">ZfMuscle | Install</h2>
+        <h2 class="text-center header-h2">ZfMuscle | Install</h2>
 
         <div class="col-sm-6">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('firstname')->getLabel(); ?></label>
+                <label><?php echo $form->get('firstname')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('firstname')); ?>
                 </div>
@@ -39,7 +39,7 @@ $form->setAttribute('autocomplete', 'off');
         <div class="col-sm-6">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('lastname')->getLabel(); ?></label>
+                <label><?php echo $form->get('lastname')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('lastname')); ?>
                 </div>
@@ -50,7 +50,7 @@ $form->setAttribute('autocomplete', 'off');
         <div class="col-sm-12">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('username')->getLabel(); ?></label>
+                <label><?php echo $form->get('username')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('username')); ?>
                 </div>
@@ -60,7 +60,7 @@ $form->setAttribute('autocomplete', 'off');
         <div class="col-sm-12">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('email')->getLabel(); ?></label>
+                <label><?php echo $form->get('email')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('email')); ?>
                 </div>
@@ -71,7 +71,7 @@ $form->setAttribute('autocomplete', 'off');
         <div class="col-sm-6">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('password')->getLabel(); ?></label>
+                <label><?php echo $form->get('password')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('password')); ?>
                 </div>
@@ -81,7 +81,7 @@ $form->setAttribute('autocomplete', 'off');
         <div class="col-sm-6">
             <!-- START Form Control-->
             <div class="form-group">
-                <label><?php echo $form->get('passwordVerify')->getLabel(); ?></label>
+                <label><?php echo $form->get('passwordVerify')->getLabel(); ?><em>*</em></label>
                 <div class="controls">
                     <?php echo $this->formInput($form->get('passwordVerify')); ?>
                 </div>

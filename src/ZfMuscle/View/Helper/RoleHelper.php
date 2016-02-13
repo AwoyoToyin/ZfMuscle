@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfMuscle\Core\View\Helper;
+namespace ZfMuscle\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
@@ -45,39 +45,22 @@ class RoleHelper extends AbstractHelper implements ServiceLocatorAwareInterface
         return $helperPluginManager->getServiceLocator();
     }
     
-    public function isAllowed($controllers, $method=null)
+    public function isAllowed($routes)
     {
         $serviceManager = $this->getServiceManager();
         $service = $serviceManager->get('BjyAuthorize\Service\Authorize');
         
-        /** Get current loggedIn role **/
-        $identity = $service->getIdentityProvider()->getIdentityRoles();
-        $roleId = $identity[0]->getRoleId();
-        $parentId = $identity[0]->getParent()->getRoleId();
-        
         $result = [];
         
-        foreach ($controllers as $controller)
+        foreach ($routes as $route)
         {
-            $method = !is_null($method) ? $method : 'index';
-            
-            if (($roleId == $this->getDefaultAdminRole() || $parentId == $this->getDefaultAdminRole()) ||
-                $service->isAllowed($controller) || $service->isAllowed($controller, $method))
+            if ($service->isAllowed('route/' . $route))
             {
                 $result['allow'] = true;
-            }
-            else
-            {
+            } else {
                 $result['deny'] = false;
             }
         }
         return $result;
-    }
-    
-    protected function getDefaultAdminRole()
-    {
-        $serviceManager = $this->getServiceManager();
-        $config = $serviceManager->get('config');
-        return $config['zfmuscle']['default_admin_role'];
     }
 }

@@ -47,25 +47,12 @@ class UserController extends ZfcUserController
 
     public function onDispatch(MvcEvent $e)
     {
-        /**
-         * If no administrative user exists in the database,
-         * then redirect to register page for a first time run
-         */
-        $filters = array();
-        $users = $this->_getUsers($filters);
-        if (!$users)
-        {
-            $this->publicActions[] = 'register';
-
-            return $this->redirect()->toRoute(static::ROUTE_INSTALL);
-        }
-
-        $action = $this->params('action');
-
-        if (!$this->_hasIdentity() && ($action != 'login') && !in_array($action, $this->publicActions))
-        {
-            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
-        }
+//        $action = $this->params('action');
+//
+//        if (!$this->_hasIdentity() && ($action != 'login') && !in_array($action, $this->publicActions))
+//        {
+//            return $this->redirect()->toRoute(static::ROUTE_LOGIN);
+//        }
 
         $this->layout('layout/dashboard');
 
@@ -178,6 +165,18 @@ class UserController extends ZfcUserController
             $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
             return $this->forward()->dispatch(static::CONTROLLER_NAME, array('action' => 'authenticate'));
         }
+    }
+
+    /**
+     * Logout and clear the identity
+     */
+    public function logoutAction()
+    {
+        $this->zfcUserAuthentication()->getAuthAdapter()->resetAdapters();
+        $this->zfcUserAuthentication()->getAuthAdapter()->logoutAdapters();
+        $this->zfcUserAuthentication()->getAuthService()->clearIdentity();
+
+        return $this->redirect()->toRoute(static::ROUTE_LOGIN);
     }
 
     /**
@@ -318,11 +317,11 @@ class UserController extends ZfcUserController
             $this->getEventManager()->trigger('cacheUserPermission', $this, array('user' => $identity));
             
             $name = $identity->getFirstname()." ".$identity->getLastname();
+            $message = "Welcome back {$name}. Redirecting...";
             $success = array(
                 'status' => 'SUCCESS',
                 'redirect' => '1',
-                'name' => $name,
-                'message' => 'Howdy! Log In successful. Redirecting...'
+                'message' => $message
             );
             
             return $success;
@@ -337,7 +336,7 @@ class UserController extends ZfcUserController
             }
             
             // cache user permissions
-            $this->getEventManager()->trigger('cacheUserPermission', $this, array('user' => $identity));
+//            $this->getEventManager()->trigger('cacheUserPermission', $this, array('user' => $identity));
             
             if ($this->getOptions()->getUseRedirectParameterIfPresent() && $redirect)
             {

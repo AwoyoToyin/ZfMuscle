@@ -15,7 +15,6 @@
         <?php
         echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                 ->prependStylesheet($this->basePath() . '/zf-muscle/css/zf-muscle.css')
-                ->prependStylesheet($this->basePath() . '/zf-muscle/css/reset.css')
                 ->prependStylesheet($this->basePath() . '/zf-muscle/css/bootstrap/bootstrap.min.css')
         ?>
 
@@ -23,7 +22,6 @@
         <?php
         echo $this->headScript()
                 ->prependFile($this->basePath() . '/zf-muscle/js/login_install.js')
-                ->prependFile($this->basePath() . '/zf-muscle/js/jquery-form/jquery_form.js')
                 ->prependFile($this->basePath() . '/zf-muscle/js/jquery-validation/js/additional-methods.min.js')
                 ->prependFile($this->basePath() . '/zf-muscle/js/jquery-validation/js/jquery.validate.min.js')
                 ->prependFile($this->basePath() . '/zf-muscle/js/jquery/jquery-1.11.1.min.js')
@@ -31,13 +29,16 @@
         ?>
 
     </head>
-    <body>
+    <body class="login_install">
         <!-- START PAGE-CONTAINER -->
         <div class="container">
             <!-- END Login Background Pic Wrapper-->
             <!-- START Login Right Container-->
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
+                    <!-- flashmessanger -->
+                    <div id="flash-message" class="result" style="display: none;"></div>
+
                     <!-- main content -->
                     <?php echo $this->content; ?>
 

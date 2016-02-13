@@ -42,16 +42,19 @@
                         <td class="v-align-middle"><?php echo $user->getRole() ? $user->getRole()->getName() : 'NILL'; ?></td>
 
                         <td class="v-align-middle semi-bold" nowrap="nowrap">
-                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-user'), 'register'); ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/users/add']); ?>
                             <?php if (isset($result['allow']) && $result['allow'] == true): ?>
                                 <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/view', array('id' => $user->getId())) ?>" title="View User">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
+                            <?php endif; ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/users/edit']); ?>
+                            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
                                 <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/edit', array('id' => $user->getId())) ?>" title="Edit User">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </a>
                             <?php endif; ?>
-                            <?php $result = $this->RoleHelper()->isAllowed(array('zfmuscle-user'), 'delete'); ?>
+                            <?php $result = $this->RoleHelper()->isAllowed(['zfmuscle/permission/users/delete']); ?>
                             <?php if (isset($result['allow']) && $result['allow'] == true): ?>
                                 <a class="btn btn-default btn-xs" href="<?php echo $this->url('zfmuscle/permission/users/delete', array('id' => $user->getId())) ?>" title="Delete User">
                                     <i class="glyphicon glyphicon-trash"></i>

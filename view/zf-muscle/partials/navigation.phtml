@@ -1,38 +1,57 @@
 
-<ul>
-    <li class="cd-label">Secondary</li>
-    <?php foreach ($this->container as $index => $page): $moduleId = rand().time(); ?>
-<!--        --><?php //$result = array(); $controllers = $page->get('controller'); if ($controllers) {
-//            if (strpos($controllers, ',') !== FALSE)
-//            {
-//                $controllers = explode(',', $controllers);
-//                $result = $this->RoleHelper()->isAllowed($controllers);
-//            }
-//            else
-//            {
-//                $result = $this->RoleHelper()->isAllowed(array($controllers));
-//            }
-//        } ?>
-        <?php $spanId = $moduleId."".$index; ?>
-        <li class="has-children bookmarks <?php if ($page->isActive()) { echo ' active'; } ?>" id="<?php echo $spanId; ?>">
-            <a href="<?php echo $page->getHref(); ?>"><?php echo $page->getLabel() ?></a>
-            <?php if ($page->hasPages()): ?>
-                <ul>
-                    <?php foreach ($page->getPages() as $child): ?>
-                        <?php $controller = $child->get('controller') ? $child->get('controller') : ''; ?>
-                        <?php //$result = $this->RoleHelper()->isAllowed(array($controller)); ?>
-                        <?php //if (isset($result['allow']) && $result['allow'] == true): ?>
-                            <?php if ($child->isActive()): ?>
-                                <script type="application/javascript">
-                                    var spanId = '<?php echo $spanId; ?>';
-                                    document.getElementById(spanId).className += ' active';
-                                </script>
-                            <?php endif; ?>
-                            <li><a href="<?php echo $child->getHref(); ?>"><?php echo $child->getLabel() ?></a></li>
-                        <?php //endif; ?>
-                    <?php endforeach; ?>
-                </ul>
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar hidden-xs hidden-sm hidden-md">
+    <form role="search">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+        </div>
+    </form>
+    <ul class="nav menu">
+        <?php $i = 1; foreach ($this->container as $index => $page): $moduleId = rand().time(); ?>
+            <?php $result = array(); $routes = $page->get('route'); if ($routes) {
+                if (strpos($routes, ',') !== FALSE) {
+                    $routes = explode(',', $routes);
+                    $result = $this->RoleHelper()->isAllowed($routes);
+                } else {
+                    $result = $this->RoleHelper()->isAllowed([$routes]);
+                }
+            } ?>
+
+            <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                <?php $spanId = $moduleId."".$index; ?>
+
+                <?php if ($page->hasPages()): ?>
+                    <li class="parent " id="<?php echo $spanId; ?>">
+                        <a data-toggle="collapse" href="<?php echo "#sub-item-{$i}"; ?>">
+                            <span class="glyphicon glyphicon-plus-sign" id="<?php echo $i; ?>"></span> <?php echo $page->getLabel(); ?> <?php $thumbnail = $page->get('thumbnail'); if ($thumbnail) { ?><span class="glyphicon <?php echo " {$thumbnail} "; ?> menu-label" id="<?php echo $spanId; ?>"></span><?php } ?>
+                        </a>
+                        <ul class="children collapse" id="<?php echo "sub-item-{$i}"; ?>">
+                            <?php foreach ($page->getPages() as $child): ?>
+                                <?php $routes = $child->get('route') ? $child->get('route') : ''; ?>
+                                <?php $result = $this->RoleHelper()->isAllowed([$routes]); ?>
+                                <?php if (isset($result['allow']) && $result['allow'] == true): ?>
+                                    <?php if ($child->isActive()): ?>
+                                    <script type="application/javascript">
+                                        var spanId = '<?php echo $spanId; ?>';
+                                        document.getElementById(spanId).className += ' active ';
+                                    </script>
+                                    <?php endif; ?>
+                                    <li>
+                                        <a class="" href="<?php echo (is_array($routes)) ? "#" : $child->getHref(); ?>">
+                                            <?php echo $child->getLabel() ?> <?php $thumbnail = $child->get('thumbnail'); if ($thumbnail) { ?><span class="glyphicon <?php echo " {$thumbnail} "; ?> sub-menu-label"></span><?php } ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                <?php else: ?>
+                    <li class="<?php echo $page->isActive() ? ' active' : ''; ?>">
+                        <a href="<?php echo $page->getHref(); ?>">
+                            <?php echo $page->getLabel() ?> <?php $thumbnail = $page->get('thumbnail'); if ($thumbnail) { ?><span class="glyphicon <?php echo " {$thumbnail} "; ?> menu-label<?php echo $page->isActive() ? ' active' : ''; ?>"></span><?php } ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
             <?php endif; ?>
-        </li>
-    <?php endforeach; ?>
-</ul>
+        <?php $i++; endforeach; ?>
+    </ul>
+</div><!--/.sidebar-->

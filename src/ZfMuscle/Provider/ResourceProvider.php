@@ -11,5 +11,5 @@ use ZfMuscle\Provider\AbstractDoctrineProvider;
  */
 class ResourceProvider extends AbstractDoctrineProvider
 {
-    protected $entityClass = 'ZfMuscle\Entity\ObjectRepositoryResource';
+    protected $entityClass = 'ZfMuscle\Entity\Resource';
 }

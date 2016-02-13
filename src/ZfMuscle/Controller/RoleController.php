@@ -96,7 +96,6 @@ class RoleController extends AbstractSecuredActionController
                     
                     $post = $form->getData();
                     $role = $service->save($post, false);
-                    var_dump($role); die;
                     if (!$role)
                     {
                         return new ViewModel(array(

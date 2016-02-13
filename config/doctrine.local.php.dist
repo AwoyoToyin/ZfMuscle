@@ -16,7 +16,7 @@ $dbParams = array(
     'port' => 3306,
     'username' => 'root',
     'password' => '',
-    'database' => 'zfbase'
+    'database' => 'zfmuscle'
 );
 
 return array(

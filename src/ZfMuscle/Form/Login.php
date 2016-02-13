@@ -55,7 +55,7 @@ class Login extends ZfcLoginForm
         $this->get('submit')
                 ->setName('login')
                 ->setAttributes(array(
-                    'class' => 'btn btn-primary',
+                    'class' => 'btn btn-sm btn-primary btn-block',
                     'id'    => 'login',
                 ));
     }

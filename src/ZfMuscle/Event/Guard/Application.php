@@ -111,6 +111,7 @@ class Application implements GuardInterface
                 if ($routeName === static::LOGIN_ROUTE && $auth->hasIdentity())
                 {
                     $url = $event->getRouter()->assemble(array(), array('name' => static::DASHBOARD_ROUTE));
+                    $this->_redirectTo($event, $url);
                 }
                 elseif ($routeName === static::LOGIN_ROUTE)
                 {
@@ -119,8 +120,8 @@ class Application implements GuardInterface
                 elseif (!$auth->hasIdentity())
                 {
                     $url = $event->getRouter()->assemble(array(), array('name' => static::LOGIN_ROUTE));
+                    $this->_redirectTo($event, $url);
                 }
-                $this->_redirectTo($event, $url);
             }
             else
             {

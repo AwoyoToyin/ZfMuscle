@@ -35,7 +35,7 @@ Add the following lines to your "composer.json" file
 ```
 //...
 "require": {
-    "talk2toyin/zf-muscle": "dev-master"
+    "awoyotoyin/zf-muscle": "dev-master"
 }
 //...
 ```

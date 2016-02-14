@@ -101,13 +101,10 @@ your-host/zfmuscle
 ```
 and you'll be presented an installation form. Complete the form and set your application ready to launch.
 
+
 Permission Settings
 -------------------
-After installation, goto:
-```
-System > Config
-```
-and click on the ```update``` button for ```System Role Resources``` to automatically import all your controllers and routes (resources).
+```NOTE``` This module uses the Route Guard ACL from BjyAuthorize module
 
 
 ```TODO:``` Tell the application to use the assets providing the correct paths to them as opposed to moving / copying them around. This could be achieved with the AssetManager Module though

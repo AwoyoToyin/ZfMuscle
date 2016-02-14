@@ -330,6 +330,7 @@ return array(
     'view_manager' => [
         'template_path_stack' => [
             'zfmuscle' => __DIR__ . '/../view',
+            'error/403' => __DIR__ . '/../view/error/403.phtml',
         ],
         'strategies' => [
             'ViewJsonStrategy',

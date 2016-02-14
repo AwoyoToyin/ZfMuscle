@@ -150,10 +150,5 @@ return [
             'zfmuscle_resource_provider_adapter'    => 'ZfMuscle\Factory\DoctrineResourceProviderAdapterFactory',
             'zfmuscle_rule_provider_adapter'        => 'ZfMuscle\Factory\DoctrineRuleProviderAdapterFactory',
         ]
-    ],
-    'view_manager' => [
-        'template_map' => [
-            'error/403' => __DIR__ . '/../../vendor/ZfMuscle/view/error/403.phtml'
-        ]
     ]
 ];

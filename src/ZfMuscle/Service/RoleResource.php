@@ -76,34 +76,50 @@ class RoleResource
     }
 
     /**
-     * @param $moduleObject
-     * @param $loadedModule
-     * @return array
+     * @param $route
+     * @param $key
      */
-    private function _getControllerAlias($moduleObject, $loadedModule)
+    private function _setResources($route, $key)
     {
-        $mainModule = [];
-        $config = $moduleObject->getConfig();
-
-        foreach ($config as $key => $value) {
-            if ($key !== 'controllers') {
-                continue;
-            }
-
-            foreach ($config['controllers'] as $k => $v) {
-                if ($k !== 'invokables') {
-                    continue;
-                }
-
-                $controllers = $config['controllers']['invokables'];
-                foreach ($controllers as $k => $moduleClass) {
-                    $mainModule[$loadedModule][$moduleClass] = [
-                        'alias' => $k,
-                    ];
-                }
+        if ($route['type'] === 'Literal' || $route['type'] === 'Zend\Mvc\Router\Http\Literal')
+        {
+            list($_controller) = $this->_getLiteralRoute($route);
+            $this->_resources[$key] = [
+                'route' => $key,
+                'controller' => $_controller,
+            ];
+        } else {
+            if ($route['type'] === 'Segment' || $route['type'] === 'Zend\Mvc\Router\Http\Segment')
+            {
+                list($_controller) = $this->_getSegmentedRoute($route);
+                $this->_resources[$key] = [
+                    'route' => $key,
+                    'controller' => $_controller,
+                ];
             }
         }
-        return $mainModule;
+
+        if (isset($route['child_routes']) && !empty($route['child_routes']))
+        {
+            $this->_setChildRoutes($route, $key);
+        }
+    }
+
+    /**
+     * @param $route
+     * @return array
+     */
+    private function _getLiteralRoute($route)
+    {
+        if (isset($route['options']['defaults']) && !empty($route['options']['defaults']))
+        {
+            if (isset($route['options']['defaults']['__NAMESPACE__']) && !empty($route['options']['defaults']['__NAMESPACE__'])) {
+                $_controller = $route['options']['defaults']['__NAMESPACE__'] . '\\' . $route['options']['defaults']['controller'];
+            } else {
+                $_controller = $route['options']['defaults']['controller'];
+            }
+            return array($_controller);
+        }
     }
 
     /**
@@ -140,46 +156,28 @@ class RoleResource
 
     /**
      * @param $route
-     * @return array
-     */
-    private function _getLiteralRoute($route)
-    {
-        if (isset($route['options']['defaults']) && !empty($route['options']['defaults']))
-        {
-            if (isset($route['options']['defaults']['__NAMESPACE__']) && !empty($route['options']['defaults']['__NAMESPACE__'])) {
-                $_controller = $route['options']['defaults']['__NAMESPACE__'] . '\\' . $route['options']['defaults']['controller'];
-            } else {
-                $_controller = $route['options']['defaults']['controller'];
-            }
-            return array($_controller);
-        }
-    }
-
-    /**
-     * @param $route
      * @param $key
-     * @param $childKey
+     * @param null $chldKey
      */
-    private function _setChildRoutes($route, $key, $childKey = null)
+    private function _setChildRoutes($route, $key, $chldKey = null)
     {
-        $chldKey = $key;
-
-        if (!is_null($childKey))
+        if (is_null($chldKey))
         {
-            $chldKey = $key . '/' .$childKey;
+            $chldKey = $key;
         }
 
         if (isset($route['child_routes']) && !empty($route['child_routes']))
         {
             foreach ($route['child_routes'] as $childKey => $childRoute)
             {
+                $childKey = $chldKey . '/' . $childKey;
                 if ($childRoute['type'] === 'Literal' || $childRoute['type'] === 'Zend\Mvc\Router\Http\Literal')
                 {
                     list($_controller) = $this->_getLiteralRoute($childRoute);
                     if ($_controller)
                     {
                         $this->_resources[$key]['children'][] = [
-                            'route' => $chldKey . '/' .$childKey,
+                            'route' => $childKey,
                             'controller' => $_controller,
                         ];
                     }
@@ -188,7 +186,7 @@ class RoleResource
                 {
                     list($_controller) = $this->_getSegmentedRoute($childRoute);
                     $this->_resources[$key]['children'][] = [
-                        'route' => $chldKey . '/' . $childKey,
+                        'route' => $childKey,
                         'controller' => $_controller,
                     ];
                 }
@@ -201,32 +199,33 @@ class RoleResource
     }
 
     /**
-     * @param $route
-     * @param $key
+     * @param $moduleObject
+     * @param $loadedModule
+     * @return array
      */
-    private function _setResources($route, $key)
+    private function _getControllerAlias($moduleObject, $loadedModule)
     {
-        if ($route['type'] === 'Literal' || $route['type'] === 'Zend\Mvc\Router\Http\Literal')
-        {
-            list($_controller) = $this->_getLiteralRoute($route);
-            $this->_resources[$key] = [
-                'route' => $key,
-                'controller' => $_controller,
-            ];
-        } else {
-            if ($route['type'] === 'Segment' || $route['type'] === 'Zend\Mvc\Router\Http\Segment')
-            {
-                list($_controller) = $this->_getSegmentedRoute($route);
-                $this->_resources[$key] = [
-                    'route' => $key,
-                    'controller' => $_controller,
-                ];
+        $mainModule = [];
+        $config = $moduleObject->getConfig();
+
+        foreach ($config as $key => $value) {
+            if ($key !== 'controllers') {
+                continue;
+            }
+
+            foreach ($config['controllers'] as $k => $v) {
+                if ($k !== 'invokables') {
+                    continue;
+                }
+
+                $controllers = $config['controllers']['invokables'];
+                foreach ($controllers as $k => $moduleClass) {
+                    $mainModule[$loadedModule][$moduleClass] = [
+                        'alias' => $k,
+                    ];
+                }
             }
         }
-
-        if (isset($route['child_routes']) && !empty($route['child_routes']))
-        {
-            $this->_setChildRoutes($route, $key);
-        }
+        return $mainModule;
     }
 }

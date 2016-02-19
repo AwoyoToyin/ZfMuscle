@@ -1,21 +1,15 @@
-
-
 <?php
 
-$rActions = array();
-$rControllers = array();
-$rModules = array();
-if (!empty($this->roleResources))
+$rRoutes = [];
+$rController = [];
+//var_dump($this->roleResources); die;
+foreach ($this->roleResources as $resourceObject)
 {
-    foreach ($this->roleResources as $entity)
-    {
-        $rActions[] = $entity->getId();
-        $rControllers[] = $entity->getController()->getId();
-        $rModules[] = $entity->getController()->getModule()->getId();
-    }
+    $rRoutes[] = $resourceObject->getResourceId();
+    $rController[] = $resourceObject->getControllerId();
 }
+//var_dump($rValues); die;
 ?>
-
 <!-- START Form Control-->
 <div class="row">
     <div class="col-sm-6">
@@ -31,36 +25,33 @@ if (!empty($this->roleResources))
 <!-- END Form Control-->
 
 <ul id="role-resource">
-<?php foreach ($this->resources as $module): ?>
-    <?php $mTitle = $module->getTitle(); $mTitleLower = strtolower($mTitle); ?>
+<?php foreach ($this->resources as $key => $rArray): ?>
     <li>
         <div class="checkbox check-primary">
-            <input type="checkbox" <?php echo (in_array($module->getId(), $rModules)) ? 'checked = "checked"' : '' ?> name="modules[]" id="<?php echo $mTitleLower; ?>" />
-            <label for="<?php echo $mTitleLower; ?>"><?php echo $mTitle; ?></label>
+            <input type="checkbox" <?php echo (in_array($rArray['route'], $rRoutes)) ? 'checked = "checked"' : '' ?> name="resources[<?php echo $rArray['controller'];?>][]" value="<?php echo $rArray['route']; ?>" id="<?php echo $rArray['route']; ?>" />
+            <label for="<?php echo $rArray['route']; ?>"><?php echo ucfirst($rArray['route']); ?></label>
         </div>
-        <?php if ($module->getControllers()): ?>
+        <?php if (isset($rArray['child_routes']) && !empty($rArray['child_routes'])): ?>
             <ul>
-                <?php foreach ($module->getControllers() as $controller): ?>
-                    <?php if ($controller->getAlias() === 'zfmuscle') { continue; } ?>
-                    <?php $cAlias = $controller->getAlias(); $cAliasUpper = $cAlias.$controller->getId(); ?>
+                <?php foreach ($rArray['child_routes'] as $childRoute): ?>
                     <li>
                         <div class="checkbox check-primary">
-                            <input type="checkbox" <?php echo (in_array($controller->getId(), $rControllers)) ? 'checked = "checked"' : '' ?> name="controllers[]" id="<?php echo $cAlias; ?>" />
-                            <label for="<?php echo $cAlias; ?>"><?php echo $cAlias; ?></label>
+                            <input type="checkbox" <?php echo (in_array($childRoute['route'], $rRoutes)) ? 'checked = "checked"' : '' ?> name="resources[<?php echo $childRoute['controller'];?>][]" value="<?php echo $childRoute['route']; ?>" id="<?php echo $childRoute['route']; ?>" />
+                            <label for="<?php echo $childRoute['route']; ?>"><?php echo $childRoute['route']; ?></label>
                         </div>
-                        <?php if ($controller->getActions()): ?>
-                            <ul>
-                                <?php foreach ($controller->getActions() as $action): ?>
-                                    <?php $aTitle = $action->getTitle(); $aTitleId = strtolower($aTitle.$action->getId()); ?>
-                                    <li>
-                                        <div class="checkbox check-primary">
-                                            <input type="checkbox" <?php echo (in_array($action->getId(), $rActions)) ? 'checked = "checked"' : '' ?> name="actions[]" value="<?php echo $action->getId(); ?>" id="<?php echo $aTitleId; ?>" />
-                                            <label for="<?php echo $aTitleId; ?>"><?php echo $aTitle; ?></label>
-                                        </div>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php endif; ?>
+<!--                        --><?php //if ($controller->getActions()): ?>
+<!--                            <ul>-->
+<!--                                --><?php //foreach ($controller->getActions() as $action): ?>
+<!--                                    --><?php //$aTitle = $action->getTitle(); $aTitleId = strtolower($aTitle.$action->getId()); ?>
+<!--                                    <li>-->
+<!--                                        <div class="checkbox check-primary">-->
+<!--                                            <input type="checkbox" --><?php //echo (in_array($action->getId(), $rActions)) ? 'checked = "checked"' : '' ?><!-- name="actions[]" value="--><?php //echo $action->getId(); ?><!--" id="--><?php //echo $aTitleId; ?><!--" />-->
+<!--                                            <label for="--><?php //echo $aTitleId; ?><!--">--><?php //echo $aTitle; ?><!--</label>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                --><?php //endforeach; ?>
+<!--                            </ul>-->
+<!--                        --><?php //endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

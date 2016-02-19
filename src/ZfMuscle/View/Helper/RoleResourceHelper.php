@@ -43,9 +43,29 @@ class RoleResourceHelper extends AbstractHelper implements ServiceLocatorAwareIn
         $helperPluginManager = $this->getServiceLocator();
         // servicemanager gives access to a wide range of things.
         $serviceManager = $helperPluginManager->getServiceLocator();
-        $moduleService = $serviceManager->get('zfmuscle_module_service');
-        $resources = $moduleService->fetchAll();
-        
+
+        // todo: check cache for cached resources, if not found, continue with the fetch
+        $service = $serviceManager->get('ZfMuscle\Service\RoleResource');
+        $rawResources = $service->fetchAllRoutes();
+
+        $resources = [];
+        foreach ($rawResources as $key => $routes) {
+            $resources[$key] = [
+                'route'         => $routes['route'],
+                'controller'    => $routes['controller']
+            ];
+            if (isset($routes['children'])) {
+                foreach ($routes['children'] as $child) {
+                    if (is_array($child) && !empty($child)) {
+                        $resources[$key]['child_routes'][] = [
+                            'route'         => $child['route'],
+                            'controller'    => $child['controller']
+                        ];
+                    }
+                }
+            }
+        }
+//        var_dump($resources); die;
         return $this->getView()->render('zf-muscle/role/resource/widget', array('resources' => $resources, 'roleResources' => $roleResources));
     }
 }

@@ -65,15 +65,9 @@ class RoleController extends AbstractSecuredActionController
                     }
                     
                     $post = $form->getData();
-                    
-                    $actions = $request->getPost('actions');
-                    if (!empty($actions))
-                    {
-                        $post['actions'] = $actions;
-                    }
-                    
-                    $role = $service->save($post, false);
+                    $resources = $request->getPost('resources');
 
+                    $role = $service->save($post, false);
                     if (!$role)
                     {
                         return new JsonModel(array(
@@ -81,6 +75,8 @@ class RoleController extends AbstractSecuredActionController
                             'message' => 'Internal Error encountered. Please check the form and try again.'
                         ));
                     }
+
+                    $this->_setRoleRule($resources, $role);
                     
                     return new JsonModel(array(
                         'status' => 'SUCCESS',
@@ -95,6 +91,8 @@ class RoleController extends AbstractSecuredActionController
                     }
                     
                     $post = $form->getData();
+                    $resources = $request->getPost('resources');
+
                     $role = $service->save($post, false);
                     if (!$role)
                     {
@@ -102,7 +100,9 @@ class RoleController extends AbstractSecuredActionController
                             'form' => $form
                         ));
                     }
-                    
+
+                    $this->_setRoleRule($resources, $role);
+
                     $this->namespace = 'success';
                     $this->setFlashmessage('Role saved successfully.');
                     return $this->redirect()->toRoute(static::ROUTE_INDEX);
@@ -169,5 +169,31 @@ class RoleController extends AbstractSecuredActionController
             $this->setFlashmessage('Internal Server Error.');
         }
         return $this->redirect()->toRoute(static::ROUTE_INDEX);
+    }
+
+    /**
+     * @param $resources
+     * @param $role
+     */
+    private function _setRoleRule($resources, $role)
+    {
+        if (!empty($resources)) {
+            $this->service_definition = 'zfmuscle_resource_service';
+            $service = $this->getService();
+            foreach ($resources as $controller => $rArray) {
+                if (is_array($rArray) && !empty($rArray))
+                {
+                    foreach ($rArray as $resource)
+                    {
+                        $data = [
+                            'role_id' => $role->getId(),
+                            'resource_id' => $resource,
+                            'controller_id' => $controller
+                        ];
+                        $service->save($data);
+                    }
+                }
+            }
+        }
     }
 }

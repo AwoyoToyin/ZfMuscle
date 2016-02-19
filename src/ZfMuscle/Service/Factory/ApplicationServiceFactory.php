@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfMuscle\Service;
+namespace ZfMuscle\Service\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

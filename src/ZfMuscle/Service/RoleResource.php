@@ -17,6 +17,8 @@ class RoleResource
      */
     protected $_resources = [];
 
+    protected $_format_for_view = false;
+
     /**
      * @var ServiceLocator
      */
@@ -31,10 +33,13 @@ class RoleResource
     }
 
     /**
+     * @param bool $view determines if the routes should be properly formatted for views
      * @return array
      */
-    public function fetchAllRoutes()
+    public function fetchAllRoutes($view=false)
     {
+//        $this->_format_for_view = $view;
+
         // get the module manager
         $moduleManager = $this->serviceLocator->get('ModuleManager');
         // get all loaded modules application wide
@@ -63,10 +68,6 @@ class RoleResource
                 // loop through each route
                 foreach ($routes as $key => $route)
                 {
-                    // check for route type for the root route and act accordingly
-//                    $this->_setRootRoute($route, $key);
-
-                    // loop the children routes and act accordingly
                     $this->_setResources($route, $key);
                 }
             }
@@ -81,23 +82,20 @@ class RoleResource
      */
     private function _setResources($route, $key)
     {
+        $_controller = "";
         if ($route['type'] === 'Literal' || $route['type'] === 'Zend\Mvc\Router\Http\Literal')
         {
             list($_controller) = $this->_getLiteralRoute($route);
-            $this->_resources[$key] = [
-                'route' => $key,
-                'controller' => $_controller,
-            ];
         } else {
             if ($route['type'] === 'Segment' || $route['type'] === 'Zend\Mvc\Router\Http\Segment')
             {
                 list($_controller) = $this->_getSegmentedRoute($route);
-                $this->_resources[$key] = [
-                    'route' => $key,
-                    'controller' => $_controller,
-                ];
             }
         }
+        $this->_resources[$key] = [
+            'route' => $key,
+            'controller' => $_controller,
+        ];
 
         if (isset($route['child_routes']) && !empty($route['child_routes']))
         {

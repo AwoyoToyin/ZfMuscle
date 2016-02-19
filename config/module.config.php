@@ -275,8 +275,8 @@ return array(
         ],
         'factories' => [
             'navigation'                    => 'Zend\Navigation\Service\DefaultNavigationFactory',
-            'ZfMuscle\Config'               => 'ZfMuscle\Service\ConfigServiceFactory',
-            'ZfMuscle\App\Config'           => 'ZfMuscle\Service\ApplicationServiceFactory',
+            'ZfMuscle\Config'               => 'ZfMuscle\Service\Factory\ConfigServiceFactory',
+            'ZfMuscle\App\Config'           => 'ZfMuscle\Service\Factory\ApplicationServiceFactory',
             'ZfMuscle\Service\RoleResource' => 'ZfMuscle\Service\Factory\RoleResourceFactory',
             'BjyAuthorize\Guard\Route'      => 'ZfMuscle\Service\Factory\ApplicationGuardServiceFactory',
         ],

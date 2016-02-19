@@ -46,14 +46,22 @@ class RoleService extends AbstractCrudService
         }
         
         $entity->exchangeArray($data);
+
+        if ($lastId != '')
+        {
+            $data['parent'] = "$lastId";
+        }
+
+        if (isset($data['parent']) && !empty($data['parent']))
+        {
+            $role = $this->getServiceManager()->get('doctrine.entitymanager.orm_default')->getReference('ZfMuscle\Entity\Role', $data['parent']);
+            $entity->setParent($role);
+        }
         
-        if (isset($data['routes']) && !empty($data['routes']))
+        if (isset($data['resources']) && !empty($data['resources']))
         {
             $entity->emptyResources();
-            foreach ($data['routes'] as $route) {
-                $action = $this->getServiceManager()->get('doctrine.entitymanager.orm_default')->getReference('ZfMuscle\Entity\Resource', $route);
-                $entity->addResource($route);
-            }
+            $entity->addResource($data['resources']);
         }
         
         $this->provider->save($entity);
@@ -70,7 +78,8 @@ class RoleService extends AbstractCrudService
         
         if ($entity->getResources()->count())
         {
-            foreach ($entity->getResources() as $resource) {
+            foreach ($entity->getResources() as $resource)
+            {
                 $entity->removeResource($resource);
             }
         }

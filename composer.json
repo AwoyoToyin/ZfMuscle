@@ -21,7 +21,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5",
-        "zendframework/zendframework": "~2.5",
+        "zendframework/zendframework": "2.5.1",
         "doctrine/doctrine-orm-module": "^0.9.2",
         "zf-commons/zfc-user-doctrine-orm": "^1.0",
         "bjyoungblood/bjy-authorize": "1.4.*",

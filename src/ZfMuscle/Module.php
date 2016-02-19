@@ -4,7 +4,25 @@ namespace ZfMuscle;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\View\Helper\FlashMessenger;
+use ZfcUser\Form\LoginFilter;
+use ZfcUser\Form\RegisterFilter;
+use ZfcUser\Validator\NoRecordExists;
+use ZfMuscle\Form\Login;
+use ZfMuscle\Form\Role;
+use ZfMuscle\Form\User;
+use ZfMuscle\Options\ModuleOptions;
+use ZfMuscle\Provider\ResourceProvider;
+use ZfMuscle\Provider\RoleProvider;
+use ZfMuscle\Provider\UserProvider;
+use ZfMuscle\Service\ApplicationService;
+use ZfMuscle\Service\ResourceService;
+use ZfMuscle\Service\RoleService;
+use ZfMuscle\Service\UserService;
+use ZfMuscle\Session\Storage\AuthSessionStorage;
+use ZfMuscle\View\Helper\RoleHelper;
+use ZfMuscle\View\Helper\RoleResourceHelper;
 
 /**
  * Description of Module
@@ -52,28 +70,28 @@ class Module
         // To validate new field
         $sharedManager->attach('ZfcUser\Form\RegisterFilter', 'init', function ($e) {
             $filter = $e->getTarget();
-            $filter->add(array(
+            $filter->add([
                 'name' => 'firstname',
                 'required' => true,
                 'allowEmpty' => false,
-                'filters' => array(array('name' => 'StringTrim')),
-                'validators' => array(
-                    array(
+                'filters' => [['name' => 'StringTrim']],
+                'validators' => [
+                    [
                         'name' => 'NotEmpty',
-                    )
-                ),
-            ));
-            $filter->add(array(
+                    ]
+                ],
+            ]);
+            $filter->add([
                 'name' => 'lastname',
                 'required' => true,
                 'allowEmpty' => false,
-                'filters' => array(array('name' => 'StringTrim')),
-                'validators' => array(
-                    array(
+                'filters' => [['name' => 'StringTrim']],
+                'validators' => [
+                    [
                         'name' => 'NotEmpty',
-                    )
-                ),
-            ));
+                    ]
+                ],
+            ]);
         });
         return $zfcServiceEvents;
     }
@@ -110,7 +128,7 @@ class Module
         $eventManager->attach(MvcEvent::EVENT_RENDER, function ($e) {
             $flashMessenger = new FlashMessenger;
 
-            $messages = array();
+            $messages = [];
 
             $flashMessenger->setNamespace('success');
             if ($flashMessenger->hasMessages()) {
@@ -141,118 +159,118 @@ class Module
 
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+        return [
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/../../src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     public function getControllerPluginConfig()
     {
-        return array(
-            'factories' => array(
+        return [
+            'factories' => [
                 'RoleResourcePlugin' => 'ZfMuscle\Controller\Plugin\Factory\RoleResourcePluginFactory',
-            ),
-        );
+            ],
+        ];
     }
 
     public function getControllerConfig()
     {
-        return array(
-            'factories' => array(
+        return [
+            'factories' => [
                 'zfmuscle' => 'ZfMuscle\Factory\Controller\InstallControllerFactory',
                 'zfmuscle-user' => 'ZfMuscle\Factory\Controller\UserControllerFactory',
-            ),
-        );
+            ],
+        ];
     }
 
     public function getViewHelperConfig()
     {
-        return array(
-            'factories' => array(
+        return [
+            'factories' => [
                 'RoleResourceHelper' => function ($sm) {
-                    $helper = new \ZfMuscle\View\Helper\RoleResourceHelper();
+                    $helper = new RoleResourceHelper();
                     $helper->setServiceLocator($sm);
                     return $helper;
                 },
                 'RoleHelper' => function ($sm) {
-                    $helper = new \ZfMuscle\View\Helper\RoleHelper();
+                    $helper = new RoleHelper();
                     $helper->setServiceLocator($sm);
                     return $helper;
                 }
-            ),
-        );
+            ],
+        ];
     }
     
     public function getServiceConfig()
     {
-        return array(
-            'invokables' => array(
-                
-            ),
+        return [
+            'invokables' => [
+
+            ],
             'factories' => [
                 'Zend\Authentication\AuthenticationService' => function($sm) {
                     return $sm->get('doctrine.authenticationservice.orm_default');
                 },
                 'zfcuser_module_options' => function ($sm) {
                     $config = $sm->get('Configuration');
-                    return new \ZfMuscle\Options\ModuleOptions(isset($config['zfcuser']) ? $config['zfcuser'] : []);
+                    return new ModuleOptions(isset($config['zfcuser']) ? $config['zfcuser'] : []);
                 },
                 'zfmuscle_user_service' => function ($sm) {
-                    $service = new \ZfMuscle\Service\UserService();
+                    $service = new UserService();
                     $service->setServiceManager($sm);
-                    $provider = new \ZfMuscle\Provider\UserProvider();
+                    $provider = new UserProvider();
                     $em = $sm->get('doctrine.entitymanager.orm_default');
                     $provider->setEntityManager($em);
                     $service->setProvider($provider);
                     return $service;
                 },
                 'zfmuscle_role_service' => function ($sm) {
-                    $service = new \ZfMuscle\Service\RoleService();
+                    $service = new RoleService();
                     $service->setServiceManager($sm);
                     $formHydrator = $sm->get('default_hydrator');
                     $service->setFormHydrator($formHydrator);
-                    $provider = new \ZfMuscle\Provider\RoleProvider();
+                    $provider = new RoleProvider();
                     $em = $sm->get('doctrine.entitymanager.orm_default');
                     $provider->setEntityManager($em);
                     $service->setProvider($provider);
                     return $service;
                 },
                 'zfmuscle_resource_service' => function ($sm) {
-                    $service = new \ZfMuscle\Service\ResourceService();
+                    $service = new ResourceService();
                     $service->setServiceManager($sm);
-                    $provider = new \ZfMuscle\Provider\ResourceProvider();
+                    $provider = new ResourceProvider();
                     $em = $sm->get('doctrine.entitymanager.orm_default');
                     $provider->setEntityManager($em);
                     $service->setProvider($provider);
                     return $service;
                 },
                 'zfmuscle_application_service' => function ($sm) {
-                    $service = new \ZfMuscle\Service\ApplicationService();
+                    $service = new ApplicationService();
                     $service->setServiceManager($sm);
                     $service->setXmlInstallPath("config".DIRECTORY_SEPARATOR."local.xml");
                     return $service;
                 },
                 'zfcuser_login_form' => function ($sm) {
                     $options = $sm->get('zfcuser_module_options');
-                    $form = new \ZfMuscle\Form\Login(null, $options);
-                    $form->setInputFilter(new \ZfcUser\Form\LoginFilter($options));
+                    $form = new Login(null, $options);
+                    $form->setInputFilter(new LoginFilter($options));
                     return $form;
                 },
                 'zfcuser_register_form' => function($sm){
                     $em = $sm->get('doctrine.entitymanager.orm_default');
                     $options = $sm->get('zfcuser_module_options');
-                    $form = new \ZfMuscle\Form\User($em, null, $options);
+                    $form = new User($em, null, $options);
 //                    $form->setCaptchaElement($sm->get('zfcuser_captcha_element'));
-                    $form->setInputFilter(new \ZfcUser\Form\RegisterFilter(
-                        new \ZfcUser\Validator\NoRecordExists([
+                    $form->setInputFilter(new RegisterFilter(
+                        new NoRecordExists([
                             'mapper' => $sm->get('zfcuser_user_mapper'),
                             'key'    => 'email'
                         ]),
-                        new \ZfcUser\Validator\NoRecordExists([
+                        new NoRecordExists([
                             'mapper' => $sm->get('zfcuser_user_mapper'),
                             'key'    => 'username'
                         ]),
@@ -262,15 +280,32 @@ class Module
                 },
                 'zfmuscle_role_form' => function ($sm) {
                     $em = $sm->get('doctrine.entitymanager.orm_default');
-                    $form = new \ZfMuscle\Form\Role($em);
+                    $form = new Role($em);
 //                    $form->setServiceManager($sm);
                     return $form;
                 },
+                'AuthSessionStorage' => function($sm) {
+                    $config = $sm->get('config');
+                    $authSessionStorage = new AuthSessionStorage(
+                        'zfMuscle',
+                        null,
+                        $sm->get('Zend\Session\SessionManager')
+                    );
+                    $authSessionStorage->setAllowedIdleTimeInSeconds($config['session']['config']['authentication_expiration_time']);
+                    return $authSessionStorage;
+                },
+//                'AuthService' => function($sm) {
+//                    $authAdapter = new AuthAdapter();
+//                    $authAdapter->prepareAdapter($sm->get('zfcuser_zend_db_adapter'));
+//                    $authAdapter->initStorage($sm->get('AuthSessionStorage'));
+//
+//                    return $authAdapter;
+//                },
                 'default_hydrator' => function ($sm) {
-                    $hydrator = new \Zend\Stdlib\Hydrator\ClassMethods();
+                    $hydrator = new ClassMethods();
                     return $hydrator;
                 },
             ],
-        );
+        ];
     }
 }

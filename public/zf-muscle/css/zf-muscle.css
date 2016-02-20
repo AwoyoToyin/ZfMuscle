@@ -585,13 +585,13 @@ a.bg-danger:hover {
 }
 
 @media (max-width:1199px) {
-    .navbar-toggle {
-        display: block !important;
-        border-color: transparent !important;
-    }
-    .navbar-toggle:focus, .navbar-toggle:hover {
-        background-color: transparent !important;
-    }
+    /*.navbar-toggle {*/
+        /*display: block !important;*/
+        /*border-color: transparent !important;*/
+    /*}*/
+    /*.navbar-toggle:focus, .navbar-toggle:hover {*/
+        /*background-color: transparent !important;*/
+    /*}*/
 }
 
 .sidebar ul.nav a:hover,
@@ -674,6 +674,10 @@ a.bg-danger:hover {
 .sidebar ul.nav li.divider {
     border-bottom: 1px solid #eee;
     margin: 20px 0;
+}
+
+.sidebar ul.nav li.parent ul li.active {
+    background: #e9ecf2 !important;
 }
 
 .sidebar .attribution {

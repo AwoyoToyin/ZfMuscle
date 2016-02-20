@@ -108,7 +108,7 @@ class Application implements GuardInterface
             if (in_array(static::MODULE_MATCH, $routeArray))
             {
                 $auth = $this->serviceLocator->get('zfcuser_auth_service');
-                if ($routeName === static::LOGIN_ROUTE && $auth->hasIdentity())
+                if (($routeName === static::LOGIN_ROUTE || $routeName === static::INSTALL_ROUTE) && $auth->hasIdentity())
                 {
                     $url = $event->getRouter()->assemble(array(), array('name' => static::DASHBOARD_ROUTE));
                     $this->_redirectTo($event, $url);

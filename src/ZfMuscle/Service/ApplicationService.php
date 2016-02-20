@@ -30,25 +30,64 @@ class ApplicationService extends AbstractCrudService
         {
             return false;
         }
-        return $this->_isInstallationValid();
+
+        if(!$this->_isInstallationValid())
+        {
+            return false;
+        }
+
+        return $this->_isAdminUserExists();
     }
 
+    /**
+     * Checks if installation is valid
+     * @return bool
+     */
     protected function _isInstallationValid()
     {
         $reader = new Reader();
         $data   = $reader->fromFile($this->_getXmlInstallPath());
         $_isValid = $data['global']['install']['is_valid'];
 
-        if ($_isValid === static::VALID_INSTALL_VALUE)
+        if ($_isValid !== static::VALID_INSTALL_VALUE)
         {
-            $fileDbParams = $data['global']['install']['db_params'];
-            if (($fileDbParams === $this->_getDbParams()) === true)
-            {
-                return true;
-            }
             return false;
         }
-        return false;
+        $fileDbParams = $data['global']['install']['db_params'];
+        if (($fileDbParams !== $this->_getDbParams()) === true)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if Admin User Exists
+     * @return bool
+     */
+    protected function _isAdminUserExists()
+    {
+        /**
+         * If no administrative user exists in the database,
+         * then redirect to register page for a first time run
+         */
+        $users = $this->_getUsers([]);
+        if (!$users)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param array $filters
+     * @return mixed
+     */
+    protected function _getUsers(array $filters)
+    {
+        $service = $this->_getService('zfmuscle_user_service');
+        $users = $service->isUsersExist($filters);
+        return $users;
     }
 
     /**
@@ -61,7 +100,7 @@ class ApplicationService extends AbstractCrudService
          * We need to insert our default roles in the database
          * since who ever installs this app is considered an administrator
          */
-        $roleService = $this->_getRoleService();
+        $roleService = $this->_getService('zfmuscle_role_service');
         $roles = $this->_getDefaultRoles();
 
         // if the returned value is an array and it isn't empty
@@ -85,13 +124,13 @@ class ApplicationService extends AbstractCrudService
 
     public function _setAdminPermission()
     {
-        $roleService = $this->_getRoleService();
+        $roleService = $this->_getService('zfmuscle_role_service');
         // fetch the admin role from the database for admin rule insertion
         $adminRoleId = $roleService->getDefaultAdminRole();
         if ($adminRoleId) {
             $service = $this->getServiceManager()->get('ZfMuscle\Service\RoleResource');
             $this->_resources = $service->fetchAllRoutes();
-            $resourceService = $this->_getResourceService();
+            $resourceService = $this->_getService('zfmuscle_resource_service');
             foreach ($this->_resources as $routes) {
                 $data = [
                     'role_id' => $adminRoleId,
@@ -156,20 +195,15 @@ class ApplicationService extends AbstractCrudService
         return $this->_xml_install_path;
     }
 
-    private function _getRoleService()
+    private function _getService($instance)
     {
-        return $this->getServiceManager()->get('zfmuscle_role_service');
-    }
-
-    private function _getResourceService()
-    {
-        return $this->getServiceManager()->get('zfmuscle_resource_service');
+        return $this->getServiceManager()->get($instance);
     }
 
     protected function _getDbParams()
     {
         $params = [];
-        $config = $this->getServiceManager()->get('config');
+        $config = $this->_getService('config');
         if ($config['doctrine']['connection']['orm_default']['params'])
         {
             $raw = $config['doctrine']['connection']['orm_default']['params'];
@@ -189,7 +223,7 @@ class ApplicationService extends AbstractCrudService
      */
     private function _getDefaultRoles()
     {
-        $config = $this->getServiceManager()->get('config');
+        $config = $this->_getService('config');
         $roles = $config['zfmuscle']['default_roles'];
         return $roles;
     }

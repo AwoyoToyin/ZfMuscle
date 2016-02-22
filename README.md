@@ -12,7 +12,7 @@ The What and Why ?
 ------------------
 #### The What
 ZfMuscle is a ```Zend Framework 2 Administrative``` module built to help you not worry how to restrict access to pages and limit user actions.
-It uses the ```ZfcUserDoctrineORM by @ZF-Commons and BjyAuthorize by @bjyoungblood``` modules as based functionalities; leaving the ```ZfcUser by @ZF-Commons``` module for your own modifications.
+It uses the ```ZfcUserDoctrineORM by @ZF-Commons and BjyAuthorize by @bjyoungblood``` modules as based functionality; leaving the ```ZfcUser by @ZF-Commons``` module for your own modifications.
 Essentially, It is a fully styled/template(d) Back-end module that manages not just access to your custom Back-end modules, but application wide.
 
 #### The Why
@@ -62,7 +62,7 @@ Configuration
     ),
     //...
     ```
-    Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
+2. Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
 
     ### Note:
     The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
@@ -90,13 +90,14 @@ public/
             js/
             //...
 ```
+```TODO:``` Tell the application to use the assets providing the correct paths to them as opposed to moving / copying them around. This could be achieved with the AssetManager Module though
 
 Important to Note
 -----------------
 1. This module essentially takes over the control of your application.
 2. It has an installation wizard that you are presented with on installation.
 3. It uses the route guard in BjyAuthorize module and hence, all your routes definition must have a default.
-   Example
+   Example:
    ```
    ...
    'edit' => [
@@ -140,6 +141,3 @@ Important to Note
 Permission Settings
 -------------------
 ```NOTE``` This module uses the Route Guard ACL from BjyAuthorize module
-
-
-```TODO:``` Tell the application to use the assets providing the correct paths to them as opposed to moving / copying them around. This could be achieved with the AssetManager Module though

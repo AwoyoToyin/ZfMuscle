@@ -16,8 +16,8 @@ It uses the ```ZfcUserDoctrineORM by @ZF-Commons and BjyAuthorize by @bjyoungblo
 Essentially, It is a fully styled/template(d) Back-end module that manages not just access to your custom Back-end modules, but application wide.
 
 #### The Why
-As I am always having to work on projects that requires restricted access to resources and having to recode and hard code all these is such a pain, I thought to myself,  
-wouldn't it be cool if there was a module somewhere out there that does all these ```(I know, there's BjyAuthorize for ACL by @bjyoungblood, ZfcUser by @ZF-Commons for user management)``` as a package?
+As I am always having to work on projects that requires restricted access to resources and having to recode and hard code all these is such a pain,
+I thought to myself, wouldn't it be cool if there was a module somewhere out there that does all these ```(I know, there's BjyAuthorize for ACL by @bjyoungblood, ZfcUser by @ZF-Commons for user management)``` as a package?
 
 A flexible and scalable module that has all these shipped with it? "It'd be cool" my answer after giving it some thought.
 
@@ -43,6 +43,7 @@ Add the following lines to your "composer.json" file
 Configuration
 -------------
 1. Add "ZfMuscle", "DoctrineModule", "DoctrineORMModule", "AssetManager", "ZfcBase", "ZfcUser", "ZfcUserDoctrineORM" and "BjyAuthorize" to your application.config.php file.
+
 Example:
 ```
 'modules' => array(
@@ -60,7 +61,7 @@ Example:
     ...
 )
 ```
-2. Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
+2. Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions.
 
 ### Note:
 The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
@@ -95,6 +96,7 @@ Important to Note
 1. This module essentially takes over the control of your application.
 2. It has an installation wizard that you are presented with on installation.
 3. It uses the route guard in BjyAuthorize module and hence, all your routes definition must have a default.
+
 Example:
 ```
 ...
@@ -119,6 +121,7 @@ configuration provided to skip such modules.
 
 To enlist a module to be skipped during this import, open the ```config/autoload/zfmuscle.global.php``` file
 and under the ```'skip_modules'``` key, define such a module.
+
 Example:
 ```
 ...

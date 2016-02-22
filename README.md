@@ -43,29 +43,27 @@ Add the following lines to your "composer.json" file
 Configuration
 -------------
 1. Add "ZfMuscle", "DoctrineModule", "DoctrineORMModule", "AssetManager", "ZfcBase", "ZfcUser", "ZfcUserDoctrineORM" and "BjyAuthorize" to your application.config.php file.
-    Example:
-    ```
+Example:
+```
+'modules' => array(
     //...
-    'modules' => array(
-        //...
-        'AssetManager',
-        'ZendDeveloperTools',
-        'DoctrineModule',
-        'DoctrineORMModule',
-        'ZfcBase',
-        'ZfcUser',
-        'ZfcUserDoctrineORM',
-        'Application',
-        'BjyAuthorize',
-        'ZfMuscle'
-        //...
-    ),
-    //...
-    ```
+    'AssetManager',
+    'ZendDeveloperTools',
+    'DoctrineModule',
+    'DoctrineORMModule',
+    'ZfcBase',
+    'ZfcUser',
+    'ZfcUserDoctrineORM',
+    'Application',
+    'BjyAuthorize',
+    'ZfMuscle',
+    ...
+)
+```
 2. Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
 
-    ### Note:
-    The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
+### Note:
+The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
 
 
 Styling And Other Assets
@@ -97,46 +95,46 @@ Important to Note
 1. This module essentially takes over the control of your application.
 2. It has an installation wizard that you are presented with on installation.
 3. It uses the route guard in BjyAuthorize module and hence, all your routes definition must have a default.
-   Example:
-   ```
-   ...
-   'edit' => [
-       'type' => 'Segment',
-       'options' => [
-           'route' => '/edit[/:id]',
-           'constraints' => [
-               'id' => '[0-9]*',
-           ],
-           'defaults' => [
-               'controller' => 'zfmuscle-user',
-               'action'     => 'register',
-           ],
+Example:
+```
+...
+'edit' => [
+   'type' => 'Segment',
+   'options' => [
+       'route' => '/edit[/:id]',
+       'constraints' => [
+           'id' => '[0-9]*',
+       ],
+       'defaults' => [
+           'controller' => 'zfmuscle-user',
+           'action'     => 'register',
        ],
    ],
-   ...
-   ```
+],
+...
+```
 4. Since the application automatically imports all defined routes in all loaded modules,
-   modules without routers &/or routes defined don't need to checked for routes. Hence, there is a little
-   configuration provided to skip such modules.
+modules without routers &/or routes defined don't need to checked for routes. Hence, there is a little
+configuration provided to skip such modules.
 
-   To enlist a module to be skipped during this import, open the ```config/autoload/zfmuscle.global.php``` file
-   and under the ```'skip_modules'``` key, define such a module.
-   Example:
-   ```
+To enlist a module to be skipped during this import, open the ```config/autoload/zfmuscle.global.php``` file
+and under the ```'skip_modules'``` key, define such a module.
+Example:
+```
+...
+// list of modules to skip for acl
+'skip_modules' => [
+   'ZendDeveloperTools',
+   'DoctrineModule',
+   'DoctrineORMModule',
+   'AssetManager',
+   'ZfcUserDoctrineORM',
+   'BjyAuthorize',
+   'ZfcBase',
    ...
-   // list of modules to skip for acl
-   'skip_modules' => [
-       'ZendDeveloperTools',
-       'DoctrineModule',
-       'DoctrineORMModule',
-       'AssetManager',
-       'ZfcUserDoctrineORM',
-       'BjyAuthorize',
-       'ZfcBase',
-       ...
-   ],
-   ...
-   ```
+],
+...
+```
 
 Permission Settings
 -------------------

@@ -5,6 +5,7 @@ namespace ZfMuscle\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfMuscle\Entity\User;
 
 /**
  * Description of RoleHelper
@@ -36,7 +37,11 @@ class RoleHelper extends AbstractHelper implements ServiceLocatorAwareInterface
     {
         return $this->serviceLocator;
     }
-    
+
+    /**
+     * Get serviceManager
+     * @return mixed
+     */
     protected function getServiceManager()
     {
         // helpermanager that gives access to other view helpers
@@ -44,7 +49,12 @@ class RoleHelper extends AbstractHelper implements ServiceLocatorAwareInterface
         // servicemanager gives access to a wide range of things.
         return $helperPluginManager->getServiceLocator();
     }
-    
+
+    /**
+     * Checks if role has access to current routes
+     * @param $routes
+     * @return array
+     */
     public function isAllowed($routes)
     {
         $serviceManager = $this->getServiceManager();
@@ -62,5 +72,23 @@ class RoleHelper extends AbstractHelper implements ServiceLocatorAwareInterface
             }
         }
         return $result;
+    }
+
+    /**
+     * Checks if the current role should be hidden from view
+     * @param $role
+     * @return bool
+     */
+    public function isRoleHidden($role)
+    {
+        $serviceManager = $this->getServiceManager();
+        $config = $serviceManager->get('Config');
+        $defaultRole = $config['bjyauthorize']['default_role'];
+        return ($defaultRole === $role);
+    }
+
+    public function isSelfEdit(User $user, $formUserIdField)
+    {
+        return ($user->getId() === $formUserIdField->getValue());
     }
 }

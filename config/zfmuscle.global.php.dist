@@ -14,7 +14,7 @@ $zfmuscle_settings = [
 //        'ZfMuscle\Event\Listener\RoleListener',
     ],
 
-    // list of modules to skip for acl
+    // list of modules to skip for routes import
     'skip_modules' => [
         'ZendDeveloperTools',
         'DoctrineModule',
@@ -46,8 +46,8 @@ $zfmuscle_settings = [
     ],
     
     /**
-     * We set our default super sdministrator role here
-     * this is to avoid unforseen errors.
+     * We set our default super administrator role here
+     * this is to avoid unforeseen errors.
      * 
      * Whatever role set here must have been set as well in the above default_roles key => value pair
      * it is default to administrator

@@ -79,19 +79,19 @@ class UserController extends ZfcUserController
         
         $service = $this->getService();
         $page = $this->params()->fromRoute('page', 1);
-        $filters = array();
+        $filters = [];
         
         $paginator = $service->index($page, $filters);
         
         if ($request->isXmlHttpRequest())
         {
-            $view->setVariables(array('paginator' => $paginator, 'page' => $page));
+            $view->setVariables(['paginator' => $paginator, 'page' => $page]);
             $view->setTemplate('zf-muscle/user/list');
             $view->setTerminal(true);
         } else
         {
             $tableView = new ViewModel();
-            $tableView->setVariables(array('paginator' => $paginator, 'page' => $page));
+            $tableView->setVariables(['paginator' => $paginator, 'page' => $page]);
             $tableView->setTemplate('zf-muscle/user/list');
             $view->addChild($tableView, 'list');
         }
@@ -119,11 +119,11 @@ class UserController extends ZfcUserController
 
         if (!$request->isPost())
         {
-            $viewModel = new ViewModel(array(
+            $viewModel = new ViewModel([
                 'loginForm' => $form,
                 'redirect' => $redirect,
                 'enableRegistration' => $this->getOptions()->getEnableRegistration(),
-            ));
+            ]);
             
             $this->layout('layout/login_register');
             return $viewModel;
@@ -137,10 +137,10 @@ class UserController extends ZfcUserController
             if (!$form->isValid())
             {
                 // return a simple error not exposing what actually whent wrong. We don't want a criminal mind sniffing around
-                return new JsonModel(array(
+                return new JsonModel([
                     'status' => 'ERROR',
                     'message' => $this->failedLoginMessage,
-                ));
+                ]);
             }
             
             // clear adapters
@@ -184,7 +184,7 @@ class UserController extends ZfcUserController
      */
     public function registerAction()
     {
-        // if the user is logged in, we don't need to register
+        // if user is not logged in
         if (!$this->_hasIdentity())
         {
             // redirect to the login page
@@ -194,7 +194,7 @@ class UserController extends ZfcUserController
         // if registration is disabled
         if (!$this->getOptions()->getEnableRegistration())
         {
-            return array('enableRegistration' => false);
+            return ['enableRegistration' => false];
         }
         
         $form = $this->getRegisterForm();
@@ -229,26 +229,26 @@ class UserController extends ZfcUserController
                 {
                     if (!$user)
                     {
-                        return new JsonModel(array(
+                        return new JsonModel([
                             'status' => 'ERROR',
                             'message' => 'Internal Error encountered. Please check the form and try again.'
-                        ));
+                        ]);
                     }
                     
-                    return new JsonModel(array(
+                    return new JsonModel([
                         'status' => 'SUCCESS',
                         'redirect' => '1',
                         'message' => 'User saved successfully.'
-                    ));
+                    ]);
                 }
                 else
                 {
                     if (!$user)
                     {
-                        return array(
+                        return [
                             'registerForm' => $form,
                             'enableRegistration' => $this->getOptions()->getEnableRegistration(),
-                        );
+                        ];
                     }
                     
                     $this->flashMessenger->setNamespace('success');
@@ -279,10 +279,10 @@ class UserController extends ZfcUserController
             $form->bind($entity);
         }
         
-        return $vm->setVariables(array(
+        return $vm->setVariables([
             'registerForm' => $form,
             'enableRegistration' => $this->getOptions()->getEnableRegistration(),
-        ));
+        ]);
     }
 
     public function authenticateAction()
@@ -304,25 +304,25 @@ class UserController extends ZfcUserController
             if (!$auth->isValid())
             {
                 $adapter->resetAdapters();
-                $failed = array(
+                $failed = [
                     'status' => 'ERROR',
                     'message' => $this->failedLoginMessage,
-                );
+                ];
                 return $failed;
             }
             
             $identity = $this->zfcUserAuthentication()->getIdentity();
             
             // cache user permissions
-            $this->getEventManager()->trigger('cacheUserPermission', $this, array('user' => $identity));
+            $this->getEventManager()->trigger('cacheUserPermission', $this, ['user' => $identity]);
             
             $name = $identity->getFirstname()." ".$identity->getLastname();
             $message = "Welcome back {$name}. Redirecting...";
-            $success = array(
+            $success = [
                 'status' => 'SUCCESS',
                 'redirect' => '1',
                 'message' => $message
-            );
+            ];
             
             return $success;
         }

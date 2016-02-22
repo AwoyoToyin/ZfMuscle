@@ -9,7 +9,7 @@ looking to get dirty with ZF2.
 
 
 The What and Why ?
-------------
+------------------
 #### The What
 ZfMuscle is a ```Zend Framework 2 Administrative``` module built to help you not worry how to restrict access to pages and limit user actions.
 It uses the ```ZfcUserDoctrineORM by @ZF-Commons and BjyAuthorize by @bjyoungblood``` modules as based functionalities; leaving the ```ZfcUser by @ZF-Commons``` module for your own modifications.
@@ -22,7 +22,6 @@ wouldn't it be cool if there was a module somewhere out there that does all thes
 A flexible and scalable module that has all these shipped with it? "It'd be cool" my answer after giving it some thought.
 
 Still don't see the WHY ? Well, how about you dig right in and decide for yourself if it is worth all the effort.
-
 
 
 Installation
@@ -43,32 +42,30 @@ Add the following lines to your "composer.json" file
 
 Configuration
 -------------
-Add "ZfMuscle", "DoctrineModule", "DoctrineORMModule", "AssetManager", "ZfcBase", "ZfcUser", 
-"ZfcUserDoctrineORM" and "BjyAuthorize" to your application.config.php file.
-
-Example:
-```
-//...
-'modules' => array(
+1. Add "ZfMuscle", "DoctrineModule", "DoctrineORMModule", "AssetManager", "ZfcBase", "ZfcUser", "ZfcUserDoctrineORM" and "BjyAuthorize" to your application.config.php file.
+    Example:
+    ```
     //...
-    'AssetManager',
-    'ZendDeveloperTools',
-    'DoctrineModule',
-    'DoctrineORMModule',
-    'ZfcBase',
-    'ZfcUser',
-    'ZfcUserDoctrineORM',
-    'Application',
-    'BjyAuthorize',
-    'ZfMuscle'
+    'modules' => array(
+        //...
+        'AssetManager',
+        'ZendDeveloperTools',
+        'DoctrineModule',
+        'DoctrineORMModule',
+        'ZfcBase',
+        'ZfcUser',
+        'ZfcUserDoctrineORM',
+        'Application',
+        'BjyAuthorize',
+        'ZfMuscle'
+        //...
+    ),
     //...
-)
-//...
-```
-Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
+    ```
+    Copy the files having ```.dist``` extension in config to your application autoload and remove the ```.dist``` extensions
 
-### Note:
-The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
+    ### Note:
+    The ```bjyauthorize.global.php.dist``` file allow you to make use of the embedded user permission.
 
 
 Styling And Other Assets
@@ -94,13 +91,51 @@ public/
             //...
 ```
 
-### URLS
-After the above configurations, navigate to:
-```
-your-host/zfmuscle
-```
-and you'll be presented an installation form. Complete the form and set your application ready to launch.
+Important to Note
+-----------------
+1. This module essentially takes over the control of your application.
+2. It has an installation wizard that you are presented with on installation.
+3. It uses the route guard in BjyAuthorize module and hence, all your routes definition must have a default.
+   Example
+   ```
+   ...
+   'edit' => [
+       'type' => 'Segment',
+       'options' => [
+           'route' => '/edit[/:id]',
+           'constraints' => [
+               'id' => '[0-9]*',
+           ],
+           'defaults' => [
+               'controller' => 'zfmuscle-user',
+               'action'     => 'register',
+           ],
+       ],
+   ],
+   ...
+   ```
+4. Since the application automatically imports all defined routes in all loaded modules,
+   modules without routers &/or routes defined don't need to checked for routes. Hence, there is a little
+   configuration provided to skip such modules.
 
+   To enlist a module to be skipped during this import, open the ```config/autoload/zfmuscle.global.php``` file
+   and under the ```'skip_modules'``` key, define such a module.
+   Example:
+   ```
+   ...
+   // list of modules to skip for acl
+   'skip_modules' => [
+       'ZendDeveloperTools',
+       'DoctrineModule',
+       'DoctrineORMModule',
+       'AssetManager',
+       'ZfcUserDoctrineORM',
+       'BjyAuthorize',
+       'ZfcBase',
+       ...
+   ],
+   ...
+   ```
 
 Permission Settings
 -------------------

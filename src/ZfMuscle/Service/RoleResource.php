@@ -60,15 +60,16 @@ class RoleResource
 
             // get all routes for current module
             $module = $moduleManager->getModule($loadedModule);
-            $routes = $module->getConfig()['router']['routes'];
-
-            // if the routes variable (array) is not empty
-            if (!empty($routes))
+            if ($routes = $module->getConfig()['router']['routes'])
             {
-                // loop through each route
-                foreach ($routes as $key => $route)
+                // if the routes variable (array) is not empty
+                if (!empty($routes))
                 {
-                    $this->_setResources($route, $key);
+                    // loop through each route
+                    foreach ($routes as $key => $route)
+                    {
+                        $this->_setResources($route, $key);
+                    }
                 }
             }
         }

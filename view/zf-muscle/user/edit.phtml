@@ -14,23 +14,13 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('autocomplete', 'off');
 ?>
 
-<?php // elseif ($element instanceof Zend\Form\Element\Captcha): ?>
-    <!--<dd><?php // echo $this->formCaptcha($element) . $this->formElementErrors($element)                    ?></dd>-->
-<?php // else: ?>
-    <!--<dd><?php // echo $this->formInput($element) . $this->formElementErrors($element)                    ?></dd>-->
-<?php // endif ?>
-
 <div class="col-lg-12">
-    <h1 class="page-header">New User</h1>
     <!-- START add Form -->
     <?php echo $this->form()->openTag($form) ?>
     <div class="panel panel-transparent ">
-
-        <div class="panel-heading">
+        <div class="page-header panel-heading">
             <div class="panel-title pull-left">Edit User</div>
             <p class="pull-right">
-<!--                <button class="btn btn-default btn-cons" type="button">White</button>
-                <button class="btn btn-success btn-cons" type="button">Success</button>-->
                 <?php echo $this->formButton($form->get('submit')) ?>
             </p>
         </div>
@@ -43,9 +33,11 @@ $form->setAttribute('autocomplete', 'off');
                             <li class="active">
                                 <a data-toggle="tab" href="#tabInformation">Information</a>
                             </li>
-                            <li>
-                                <a data-toggle="tab" href="#tabRole">Role</a>
-                            </li>
+                            <?php $isSelfEdit = $this->RoleHelper()->isSelfEdit($this->zfcUserIdentity(), $form->get('id')); if (!$isSelfEdit): ?>
+                                <li>
+                                    <a data-toggle="tab" href="#tabRole">Role</a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
 
                         <div class="tab-content bg-white">
@@ -82,53 +74,26 @@ $form->setAttribute('autocomplete', 'off');
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- END Form Control-->
-                                        <!-- START Form Control-->
-<!--                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <div class="form-group form-group-default required">
-                                                    <label><?php // echo $form->get('email')->getLabel(); ?></label>
-                                                    <?php // echo $this->formInput($form->get('email')); ?>
-                                                </div>
-                                            </div>
-                                        </div>-->
-                                        <!-- END Form Control-->
-<!--                                        <div class="row clearfix">
-                                            <div class="col-sm-6">
-                                                 START Form Control
-                                                <div class="form-group form-group-default">
-                                                    <label><?php // echo $form->get('password')->getLabel(); ?></label>
-                                                    <?php // echo $this->formInput($form->get('password')); ?>
-                                                </div>
-                                                 END Form Control
-                                            </div>
-                                            <div class="col-sm-6">
-                                                 START Form Control
-                                                <div class="form-group form-group-default">
-                                                    <label><?php // echo $form->get('passwordVerify')->getLabel(); ?></label>
-                                                    <?php // echo $this->formInput($form->get('passwordVerify')); ?>
-                                                </div>
-                                                 END Form Control
-                                            </div>
-                                        </div>-->
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane p-l-20 p-r-20 p-t-20" id="tabRole">
-                                <div class="row column-seperation">
-                                    <div class="col-md-12">
-                                        <h5 class="m-b-20">Assign User Role</h5>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group form-group-default form-group-default-select2 required">
-                                                    <label><?php echo $form->get('role')->getLabel(); ?></label>
-                                                    <?php echo $this->formSelect($form->get('role')); ?>
+                            <?php if (!$isSelfEdit): ?>
+                                <div class="tab-pane p-l-20 p-r-20 p-t-20" id="tabRole">
+                                    <div class="row column-seperation">
+                                        <div class="col-md-12">
+                                            <h5 class="m-b-20">Assign User Role</h5>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group form-group-default form-group-default-select2 required">
+                                                        <label><?php echo $form->get('role')->getLabel(); ?></label>
+                                                        <?php echo $this->formSelect($form->get('role')); ?>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

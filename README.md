@@ -27,6 +27,7 @@ Still don't see the WHY ? Well, how about you dig right in and decide for yourse
 Demo Preview
 ------------
 See a demo preview at <https://zfmuscletest.herokuapp.com/>
+```TODO:``` install application and open up a demo admin login and password
 
 
 Installation

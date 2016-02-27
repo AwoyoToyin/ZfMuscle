@@ -24,6 +24,11 @@ A flexible and scalable module that has all these shipped with it? "It'd be cool
 Still don't see the WHY ? Well, how about you dig right in and decide for yourself if it is worth all the effort.
 
 
+Demo Preview
+------------
+See a demo preview at <https://zfmuscletest.herokuapp.com/>
+
+
 Installation
 ------------
 

@@ -27,7 +27,6 @@ class Login extends ZfcLoginForm
         
         $this->get('identity')
                 ->setAttributes(array(
-                    'placeholder'   => 'e.g example@gmail.com',
                     'class'         => 'form-control',
                     'id'            => 'identity',
                     'autofocus'     => 'autofocus',

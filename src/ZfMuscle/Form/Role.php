@@ -24,72 +24,72 @@ class Role extends Form implements InputFilterProviderInterface {
         
         $this->em = $em;
         
-        $this->add(array(
+        $this->add([
             'name' => 'id',
-            'attributes' => array(
+            'attributes' => [
                 'type' => 'hidden',
-            ),
-        ))->add(array(
+            ],
+        ])->add([
             'name'      => 'name',
-            'options'   => array(
+            'options'   => [
                 'label' => 'Role Name',
-            ),
-            'attributes' => array(
+            ],
+            'attributes' => [
                 'type'          => 'text',
                 'placeholder'   => 'Role Name',
                 'class'         => 'form-control',
                 'id'            => 'name',
                 'autofocus'     => 'autofocus',
-            ),
-        ))->add(array(
+            ],
+        ])->add([
             'type'    => 'DoctrineModule\Form\Element\ObjectSelect',
             'name'    => 'parent',
-            'options' => array(
+            'options' => [
                 'label'          => 'Parent Role',
                 'object_manager' => $this->em,
                 'target_class'   => 'ZfMuscle\Entity\Role',
                 'property'       => 'roleId',
-                'empty_option'   => 'please select...',
+                'empty_option'   => '--Select--',
                 'is_method'      => true,
-                'find_method'    => array(
+                'find_method'    => [
                     'name'   => 'getRoles',
-                ),
-            ),
-            'attributes' => array(
+                ],
+            ],
+            'attributes' => [
                 'class'             => 'full-width',
                 'data-placeholder'  => 'Select Parent Role',
                 'data-init-plugin'  => 'select2',
                 'id'                => 'parent',
-            ),
-        ));
+            ],
+        ]);
         
         $submitElement = new Element\Button('submit');
         $submitElement
             ->setName('submit')
             ->setLabel('Save Role')
-            ->setAttributes(array(
+            ->setAttributes([
                 'type'  => 'submit',
                 'class'         => 'btn btn-primary btn-cons m-t-10',
                 'id'            => 'addrole',
-            ));
+            ]);
 
-        $this->add($submitElement, array(
+        $this->add($submitElement, [
             'priority' => -100,
-        ));
+        ]);
     }
 
     public function getInputFilterSpecification() {
-        return array(
-            'name' => array(
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-            ),
-            'parent' => array(
+        return [
+            'name' => [
+                'filters' => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                ],
+            ],
+            'parent' => [
                 'required' => false,
-            ),
-        );
+            ],
+        ];
     }
 
 }

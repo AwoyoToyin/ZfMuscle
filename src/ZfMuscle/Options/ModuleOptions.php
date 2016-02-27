@@ -30,7 +30,7 @@ class ModuleOptions extends ZfcUserDoctrineORMModuleOptions
     /**
      * @var array
      */
-    protected $authIdentityFields = array( 'email' );
+    protected $authIdentityFields = ['username'];
 
     /**
      * @var string
@@ -60,14 +60,14 @@ class ModuleOptions extends ZfcUserDoctrineORMModuleOptions
     /**
      * @var array
      */
-    protected $formCaptchaOptions = array(
+    protected $formCaptchaOptions = [
         'class'   => 'figlet',
-        'options' => array(
+        'options' => [
             'wordLen'    => 5,
             'expiration' => 300,
             'timeout'    => 300,
-        ),
-    );
+        ],
+    ];
 
     /**
      * set enable firstname

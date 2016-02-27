@@ -4,21 +4,21 @@ $(function ()
         debug: true,
         success: "valid"
     });
-    
+
     var $target = $('#flash-message'); // to hold element to display ajax response
     var $loading = $('#loading'); // to hold our loading gif
     var $form; // to hold our form
     var $url; // to hold redirect urls
     var obj;
     var bgColor = "bg-danger";
-    
-    
+
+
     // Binding Role Resources to an event
     $("#role-resource li div input[type='checkbox']").change(function ()
     {
         $(this).parent().siblings('ul').find("input[type='checkbox']").prop('checked', this.checked);
     });
-    
+
     /**
      * Display flashmessanger if not empty
      */
@@ -30,12 +30,12 @@ $(function ()
         };
         showNotify(obj);
     }
-    
+
 //    $("#flashmessage-main").slideDown("slow", function () {
 //        $("#flashmessage-main").slideUp("slow");
 //    }).delay(3000);
-    
-    
+
+
     /**
      * Validate Install | Login | Registration forms
      */
@@ -91,7 +91,7 @@ $(function ()
         rules: {
             identity: {
                 required: true,
-                email: true,
+                //email: true,
                 nowhitespace: true
             },
             credential: {
@@ -100,8 +100,8 @@ $(function ()
         },
         messages: {
             identity: {
-                required: 'Email required',
-                email: 'Enter valid email'
+                required: 'Identity required'
+                //email: 'Enter valid email'
             },
             credential: {
                 required: 'Credential required'
@@ -119,11 +119,11 @@ $(function ()
                     toggleAjaxLoader();
                 }
             })
-            .done(function(data)
-            {
-                toggleAjaxLoader(data);
-                $('#login').removeAttr('disabled');
-            });
+                .done(function(data)
+                {
+                    toggleAjaxLoader(data);
+                    $('#login').removeAttr('disabled');
+                });
         }
     });
     $('#form-user-add').validate({
@@ -174,7 +174,7 @@ $(function ()
         submitHandler: function(form) {
 //            form.submit();
             $form = $('#form-user-add');
-            
+
             $.ajax({
                 type: "POST",
                 url: form.action,
@@ -185,14 +185,14 @@ $(function ()
                     toggleAjaxLoader();
                 }
             })
-            .done(function(data)
-            {
-                toggleAjaxLoader(data);
-                $('#install').removeAttr('disabled');
-            });
+                .done(function(data)
+                {
+                    toggleAjaxLoader(data);
+                    $('#install').removeAttr('disabled');
+                });
         }
     });
-    
+
     $('#form-role-add').validate({
         rules: {
             name: {
@@ -208,7 +208,7 @@ $(function ()
         },
         submitHandler: function(form) {
             $form = $('#form-role-add');
-            
+
             $.ajax({
                 type: "POST",
                 url: form.action,
@@ -219,14 +219,14 @@ $(function ()
                     toggleAjaxLoader();
                 }
             })
-            .done(function(data)
-            {
-                toggleAjaxLoader(data);
-                $('#addrole').removeAttr('disabled');
-            });
+                .done(function(data)
+                {
+                    toggleAjaxLoader(data);
+                    $('#addrole').removeAttr('disabled');
+                });
         }
     });
-    
+
     /**
      * Checkbox controls
      */
@@ -241,7 +241,7 @@ $(function ()
             $(this).val("0");
         }
     });
-    
+
     function showNotify(response)
     {
         if ($target.is(':hidden') === false)
@@ -270,7 +270,7 @@ $(function ()
             is_redirect(response.redirect);
         }
     }
-    
+
     function is_redirect(redirect)
     {
         if (redirect === '1')
@@ -305,28 +305,28 @@ $(function ()
             }).delay(3000);
         }
     }
-    
+
     $("#username").focus(function() {
         var firstname = $("#firstname").val().toLowerCase();
         var lastname = $("#lastname").val().toLowerCase();
-        
+
         if (firstname && lastname && !this.value)
         {
             this.value = firstname + lastname;
         }
-        
+
         $("#username").trigger('change');
     });
-    
+
     /**
      * Custom validation rules begins
      */
-    
+
     $.validator.addMethod("cMinLength", function(value, element, param) {
         return this.optional( element ) || value.length >= param ;
     }, 'Field must at least be {0} characters long');
     $.validator.addMethod("nowhitespace", function(value, element) {
-	return this.optional(element) || /^\S+$/i.test(value);
+        return this.optional(element) || /^\S+$/i.test(value);
     }, "No white spaces please");
     /**
      * Custom validation rules ends

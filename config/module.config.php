@@ -274,11 +274,12 @@ return array(
             'Zend\Log\LoggerAbstractServiceFactory',
         ],
         'factories' => [
-            'navigation'                    => 'Zend\Navigation\Service\DefaultNavigationFactory',
-            'ZfMuscle\Config'               => 'ZfMuscle\Service\Factory\ConfigServiceFactory',
-            'ZfMuscle\App\Config'           => 'ZfMuscle\Service\Factory\ApplicationServiceFactory',
-            'ZfMuscle\Service\RoleResource' => 'ZfMuscle\Service\Factory\RoleResourceFactory',
-            'BjyAuthorize\Guard\Route'      => 'ZfMuscle\Service\Factory\ApplicationGuardServiceFactory',
+            'navigation'                                => 'Zend\Navigation\Service\DefaultNavigationFactory',
+            'ZfMuscle\Config'                           => 'ZfMuscle\Service\Factory\ConfigServiceFactory',
+            'ZfMuscle\App\Config'                       => 'ZfMuscle\Service\Factory\ApplicationServiceFactory',
+            'ZfMuscle\Service\RoleResource'             => 'ZfMuscle\Service\Factory\RoleResourceFactory',
+            'BjyAuthorize\Guard\Route'                  => 'ZfMuscle\Service\Factory\ApplicationGuardServiceFactory',
+//            'ZfMuscle\Event\Listener\UserRoleListener'  => 'ZfMuscle\Service\Factory\UserRoleServiceFactory',
         ],
         'invokables' => [
 //            'BjyAuthorize\View\RedirectionStrategy' => 'ZfMuscle\View\RedirectionStrategy',

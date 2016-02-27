@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfMuscle\Event;
+namespace ZfMuscle\Event\Listener;
 
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -8,6 +8,7 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
 use ZfMuscle\Service\ZfMuscleServiceInterface;
 use Zend\Cache\Storage\StorageInterface;
 
@@ -37,7 +38,7 @@ abstract class AbstractSharedListener implements ListenerAggregateInterface, Ser
     
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach('cacheUserPermission', array($this, 'onCacheUserPermission'), -2000);
+        $this->listeners[] = $events->attach('cacheUserPermission', array($this, 'onCacheUserPermission'));
     }
     
     public function detach(EventManagerInterface $events)
@@ -95,7 +96,7 @@ abstract class AbstractSharedListener implements ListenerAggregateInterface, Ser
     public function getServiceLocator() {
         if (!$this->serviceLocator)
         {
-            $this->setServiceLocator(new ServiceLocatorInterface());
+            $this->setServiceLocator(new ServiceManager());
         }
         return $this->serviceLocator;
     }
@@ -110,7 +111,11 @@ abstract class AbstractSharedListener implements ListenerAggregateInterface, Ser
 
     public function getService()
     {
-        return $this->service = $this->getServiceLocator()->get($this->service_definition);
+        if (!$this->service instanceof ZfMuscleServiceInterface)
+        {
+            $this->service = $this->getServiceLocator()->get($this->service_definition);
+        }
+        return $this->service;
     }
 
 }
